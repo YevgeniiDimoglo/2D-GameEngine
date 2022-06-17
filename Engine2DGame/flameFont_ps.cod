@@ -126,33 +126,29 @@ movc r1.z, r1.z, l(1.000000), l(0)  // r1.z <- orange
 ge r1.x, r1.x, l(0.050000)
 movc r1.x, r1.x, l(1.000000), l(0)  // r1.x <- red
 
-#line 42
-itof r1.w, l(1)
-mul r1.w, r1.w, r1.z
-add r1.w, r1.w, r1.y
-mul r0.y, r0.y, r1.w
+#line 28
+add r1.x, r1.y, r1.x
+add r1.x, r1.z, r1.x
+mul r0.y, r0.y, r1.x
 
-#line 43
-mul r0.z, r0.z, r1.y
-
-#line 44
-itof r1.w, l(1)
-mul r1.z, r1.w, r1.z
-add r1.y, r1.z, r1.y
-itof r1.z, l(1)
-mul r1.x, r1.z, r1.x
+#line 29
+mul r1.x, r1.z, l(0.600000)
 add r1.x, r1.x, r1.y
+mul r0.z, r0.z, r1.x
+
+#line 30
+itof r1.x, l(0)
 mul r0.w, r0.w, r1.x
 
-#line 47
+#line 33
 itof r1.x, l(0)
-eq r1.x, r0.w, r1.x
+eq r1.x, r0.y, r1.x
 if_nz r1.x
 
-#line 49
+#line 35
   itof r0.x, l(0)
 
-#line 50
+#line 36
 endif 
 
 #line 52
@@ -161,4 +157,4 @@ mov o0.y, r0.z
 mov o0.z, r0.w
 mov o0.w, r0.x
 ret 
-// Approximately 59 instruction slots used
+// Approximately 55 instruction slots used

@@ -159,6 +159,7 @@ bool framework::initialize()
 
 	font_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font4.png");
 	font_sprite_d = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font_orig.png");
+	bug = std::make_unique<sprite>(device.Get(), L".\\resources\\bug.png");
 
 	ff.init(device.Get());
 	ds.init(device.Get(), background_sprite);
@@ -183,6 +184,10 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 #endif
 
 	timer += elapsed_time * 0.5f;
+	if (timer >= 10)
+	{
+		timer = 9.9f;
+	}
 
 }
 void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
@@ -213,7 +218,6 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 
 	if (timer <= 5)
 	{
-
 		background_sprite->render(immediate_context.Get(), 0, 0, 1280, 720);
 	}
 	else
@@ -230,10 +234,10 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 
 		font_sprite->textout(immediate_context.Get(), "Development", 0, 0, 50, 40, 1.0f, 0.0f, 1.0f, 1.0f);
 
-	if (((int)(timer * 3)) % 2 == 0 && timer < 4.6)
-	{
-		font_sprite_d->textout2(immediate_context.Get(), "JOIN", 300, 400, 150, 120, 1.0f, 0.0f, 0.0f, 1.0f);
-	}
+		if (((int)(timer * 3)) % 2 == 0 && timer < 4.6)
+		{
+			font_sprite_d->textout2(immediate_context.Get(), "JOIN", 300, 400, 150, 120, 1.0f, 0.0f, 0.0f, 1.0f);
+		}
 		
 	}
 
