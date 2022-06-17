@@ -159,7 +159,8 @@ bool framework::initialize()
 
 	font_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font4.png");
 	font_sprite_d = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font_orig.png");
-	//bug = std::make_unique<sprite>(device.Get(), L".\\resources\\bug.png");
+
+	bug = std::make_unique<sprite>(device.Get(), L".\\resources\\bug.png");
 
 	ff.init(device.Get());
 	ds.init(device.Get(), background_sprite);
@@ -215,6 +216,8 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 	{
 		timer = 4.8;
 	}
+
+	bug->render(immediate_context.Get(), 100, 100, 800, 800);
 
 	if (timer <= 5)
 	{
