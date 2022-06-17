@@ -5,9 +5,9 @@ DissolveShader::DissolveShader()
 }
 
 
-void DissolveShader::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
+void DissolveShader::init(Microsoft::WRL::ComPtr<ID3D11Device> device, std::shared_ptr<sprite>& sprite)
 {
-	background = std::make_unique<sprite>(device.Get(), L".\\resources\\background_pic_crop.jpg");
+	spriteDissolve = sprite;
 
 	load_texture_from_file(device.Get(), L".\\resources\\dissolve\\dissolve_animation.png", mask_texture_noise1.GetAddressOf(), &mask_texture2dDesc);
 
@@ -79,7 +79,7 @@ void DissolveShader::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microso
 		immediate_context->PSSetShaderResources(1, 1, mask_texture_noise1.GetAddressOf());
 
 
-		background->render(immediate_context.Get(), 0, 0, 1280, 720);
+		spriteDissolve->render(immediate_context.Get(), 0, 0, 1280, 720);
 	}
 }
 

@@ -20,7 +20,7 @@ public:
 	DissolveShader();
 	~DissolveShader();
 
-	void init(Microsoft::WRL::ComPtr<ID3D11Device> device);
+	void init(Microsoft::WRL::ComPtr<ID3D11Device> device, std::shared_ptr<sprite>& sprite);
 	void render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time);
 
 private:
@@ -42,6 +42,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> sprite_pixel_shader_dissolve;
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_state_dissolve;
 
-	std::unique_ptr<sprite> background;
+	std::shared_ptr<sprite> spriteDissolve;
 
 };
