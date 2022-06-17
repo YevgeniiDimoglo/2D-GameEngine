@@ -40,7 +40,7 @@
 // Name                 Index   Mask Register SysValue  Format   Used
 // -------------------- ----- ------ -------- -------- ------- ------
 // SV_POSITION              0   xyzw        0      POS   float       
-// COLOR                    0   xyzw        1     NONE   float   xy w
+// COLOR                    0   xyzw        1     NONE   float   xyzw
 // TEXCOORD                 0   xy          2     NONE   float   xy  
 //
 //
@@ -60,7 +60,7 @@ dcl_resource_texture2d (float,float,float,float) t1
 dcl_resource_texture2d (float,float,float,float) t2
 dcl_resource_texture2d (float,float,float,float) t3
 dcl_resource_texture2d (float,float,float,float) t4
-dcl_input_ps linear v1.xyw
+dcl_input_ps linear v1.xyzw
 dcl_input_ps linear v2.xy
 dcl_output o0.xyzw
 dcl_temps 3
@@ -72,88 +72,93 @@ dcl_temps 3
 //   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
 //
 #line 12 "C:\Users\2220175\Documents\College\Engine2DGame\flameFont_ps.hlsl"
-sample_indexable(texture2d)(float,float,float,float) r0.xyz, v2.xyxx, t0.xywz, s0
-mul r0.xyz, r0.zxyz, v1.wxyw  // r0.x <- color.w; r0.y <- color.x; r0.z <- color.y
+sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v2.xyxx, t0.xyzw, s0
+mul r0.xyzw, r0.wxyz, v1.wxyz  // r0.x <- color.w; r0.y <- color.x; r0.z <- color.y; r0.w <- color.z
 
 #line 14
 mul r1.xy, cb1[0].zwzz, cb2[0].xxxx
 add r1.xy, r1.xyxx, v2.xyxx
-sample_indexable(texture2d)(float,float,float,float) r0.w, r1.xyxx, t1.yzwx, s0
-mov r0.w, r0.w  // r0.w <- mask_value
+sample_indexable(texture2d)(float,float,float,float) r1.x, r1.xyxx, t1.xyzw, s0
+mov r1.x, r1.x  // r1.x <- mask_value
 
 #line 15
-itof r1.xy, l(2, 2, 0, 0)
-mul r1.xy, r1.xyxx, cb1[0].zwzz
-mul r1.xy, r1.xyxx, cb2[0].xxxx
-add r1.xy, r1.xyxx, v2.xyxx
-sample_indexable(texture2d)(float,float,float,float) r1.x, r1.xyxx, t2.xyzw, s0
-mov r1.x, r1.x  // r1.x <- mask_value2
+itof r1.yz, l(0, 2, 2, 0)
+mul r1.yz, r1.yyzy, cb1[0].zzwz
+mul r1.yz, r1.yyzy, cb2[0].xxxx
+add r1.yz, r1.yyzy, v2.xxyx
+sample_indexable(texture2d)(float,float,float,float) r1.y, r1.yzyy, t2.yxzw, s0
+mov r1.y, r1.y  // r1.y <- mask_value2
 
 #line 16
-mul r1.yz, cb1[0].xxyx, l(0.000000, 0.300000, 0.300000, 0.000000)
-add r1.yz, r1.yyzy, v2.xxyx
-mul r2.xy, cb1[0].zwzz, l(0.300000, 0.300000, 0.000000, 0.000000)
-mov r2.xy, -r2.xyxx
-add r1.yz, r1.yyzy, r2.xxyx
-sample_indexable(texture2d)(float,float,float,float) r1.y, r1.yzyy, t3.yxzw, s0
 mul r1.zw, cb1[0].xxxy, l(0.000000, 0.000000, 0.300000, 0.300000)
-mov r1.zw, -r1.zzzw
 add r1.zw, r1.zzzw, v2.xxxy
 mul r2.xy, cb1[0].zwzz, l(0.300000, 0.300000, 0.000000, 0.000000)
 mov r2.xy, -r2.xyxx
 add r1.zw, r1.zzzw, r2.xxxy
 sample_indexable(texture2d)(float,float,float,float) r1.z, r1.zwzz, t3.yzxw, s0
-add r1.y, r1.z, r1.y  // r1.y <- mask_value3
+mul r2.xy, cb1[0].xyxx, l(0.300000, 0.300000, 0.000000, 0.000000)
+mov r2.xy, -r2.xyxx
+add r2.xy, r2.xyxx, v2.xyxx
+mul r2.zw, cb1[0].zzzw, l(0.000000, 0.000000, 0.300000, 0.300000)
+mov r2.zw, -r2.zzzw
+add r2.xy, r2.zwzz, r2.xyxx
+sample_indexable(texture2d)(float,float,float,float) r1.w, r2.xyxx, t3.yzwx, s0
+add r1.z, r1.w, r1.z  // r1.z <- mask_value3
 
 #line 17
-sample_indexable(texture2d)(float,float,float,float) r1.z, v2.xyxx, t4.yzxw, s0
-mov r1.z, r1.z  // r1.z <- mask_value4
+sample_indexable(texture2d)(float,float,float,float) r1.w, v2.xyxx, t4.yzwx, s0
+mov r1.w, r1.w  // r1.w <- mask_value4
 
 #line 19
-mul r0.w, r0.w, r1.x
-mul r0.w, r1.y, r0.w
-add r0.w, r1.z, r0.w  // r0.w <- mask_result
+mul r1.x, r1.y, r1.x
+mul r1.x, r1.z, r1.x
+add r1.x, r1.w, r1.x  // r1.x <- mask_result
 
 #line 21
-ge r1.x, r0.w, l(0.200000)
-movc r1.x, r1.x, l(1.000000), l(0)  // r1.x <- yellow
+ge r1.y, r1.x, l(0.200000)
+movc r1.y, r1.y, l(1.000000), l(0)  // r1.y <- yellow
 
 #line 22
-ge r1.y, r0.w, l(0.100000)
-movc r1.y, r1.y, l(1.000000), l(0)  // r1.y <- orange
+ge r1.z, r1.x, l(0.100000)
+movc r1.z, r1.z, l(1.000000), l(0)  // r1.z <- orange
 
 #line 23
-ge r0.w, r0.w, l(0.050000)
-movc r0.w, r0.w, l(1.000000), l(0)  // r0.w <- red
+ge r1.x, r1.x, l(0.050000)
+movc r1.x, r1.x, l(1.000000), l(0)  // r1.x <- red
 
-#line 29
-add r0.w, r1.x, r0.w
-add r0.w, r1.y, r0.w
-mul r0.y, r0.w, r0.y
+#line 42
+itof r1.w, l(1)
+mul r1.w, r1.w, r1.z
+add r1.w, r1.w, r1.y
+mul r0.y, r0.y, r1.w
 
-#line 30
-mul r0.w, r1.y, l(0.600000)
-add r0.w, r0.w, r1.x
-mul r0.z, r0.w, r0.z
+#line 43
+mul r0.z, r0.z, r1.y
 
-#line 31
-itof r0.w, l(0)  // r0.w <- color.z
+#line 44
+itof r1.w, l(1)
+mul r1.z, r1.w, r1.z
+add r1.y, r1.z, r1.y
+itof r1.z, l(1)
+mul r1.x, r1.z, r1.x
+add r1.x, r1.x, r1.y
+mul r0.w, r0.w, r1.x
 
-#line 33
+#line 47
 itof r1.x, l(0)
-eq r1.x, r0.y, r1.x
+eq r1.x, r0.w, r1.x
 if_nz r1.x
 
-#line 35
+#line 49
   itof r0.x, l(0)
 
-#line 36
+#line 50
 endif 
 
-#line 38
+#line 52
 mov o0.x, r0.y
 mov o0.y, r0.z
 mov o0.z, r0.w
 mov o0.w, r0.x
 ret 
-// Approximately 54 instruction slots used
+// Approximately 59 instruction slots used

@@ -22,25 +22,30 @@ float4 main(VS_OUT pin) : SV_TARGET
 	float orange = step(0.1, mask_result);
 	float red = step(0.05, mask_result);
 
-	//FF FF 00
-	//FF AA 00
-	//FF 00 00
+	// red flame
 
+	/*
 	color.r *= red + yellow + orange;
 	color.g *= yellow + orange * 0.6;
-	color.b = 0;
+	color.b *= 0;
 
-
-	//00 00 FF
-	//FF AA 00
-	//FF 00 00
-
-	color.r *= 0;
-	color.g *= yellow + orange * 0.6;
-	color.b = red + yellow + orange;;
 
 	if (color.r == 0)
 	{
+		color.a = 0;
+	}
+	*/
+
+
+	// blue flame
+
+	color.r *= yellow + orange * 1;
+	color.g *= yellow;
+	color.b *= yellow + orange * 1 + red * 1;
+
+
+	if (color.b == 0)
+	{	
 		color.a = 0;
 	}
 
