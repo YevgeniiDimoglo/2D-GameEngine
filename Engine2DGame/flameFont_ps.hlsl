@@ -25,29 +25,29 @@ float4 main(VS_OUT pin) : SV_TARGET
 	// red flame
 
 	
-	color.r *= red + yellow + orange;
-	color.g *= yellow + orange * 0.6;
-	color.b *= 0;
+	//color.r *= red + yellow + orange;
+	//color.g *= yellow + orange * 0.6;
+	//color.b *= 0;
 
 
-	if (color.r == 0)
-	{
-		color.a = 0;
-	}
+	//if (color.r == 0)
+	//{
+	//	color.a = 0;
+	//}
 	
 
 
 	// blue flame
 
-	//color.r *= yellow + orange * 1;
-	//color.g *= yellow;
-	//color.b *= yellow + orange * 1 + red * 1;
+	color.r *= yellow + orange * 1;
+	color.g *= yellow;
+	color.b *= yellow + orange * 1 + red * 1;
 
 
-	//if (color.b == 0)
-	//{	
-	//	color.a = 0;
-	//}
+	if (color.b == 0)
+	{	
+		color.a = 0;
+	}
 
 	return color;
 }
