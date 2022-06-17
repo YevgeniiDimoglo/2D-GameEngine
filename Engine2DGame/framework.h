@@ -49,7 +49,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> sprite_input_layout;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> sprite_pixel_shader;
 
-	std::unique_ptr<sprite> background_sprite;
+	std::shared_ptr<sprite> background_sprite;
 	std::unique_ptr<sprite> font_sprite;
 	std::unique_ptr<sprite> font_sprite_d;
 

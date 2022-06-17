@@ -30,6 +30,15 @@ float4 main(VS_OUT pin) : SV_TARGET
 	color.g *= yellow + orange * 0.6;
 	color.b = 0;
 
+
+	//00 00 FF
+	//FF AA 00
+	//FF 00 00
+
+	color.r *= 0;
+	color.g *= yellow + orange * 0.6;
+	color.b = red + yellow + orange;;
+
 	if (color.r == 0)
 	{
 		color.a = 0;

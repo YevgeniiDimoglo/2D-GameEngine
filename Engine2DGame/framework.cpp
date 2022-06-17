@@ -155,12 +155,13 @@ bool framework::initialize()
 			sprite_pixel_shader.GetAddressOf());
 	}
 
-	background_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\background_pic_crop.jpg");
+	background_sprite = std::make_shared<sprite>(device.Get(), L".\\resources\\old-brown-paper-texture-image.jpg");
+
 	font_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font4.png");
 	font_sprite_d = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font_orig.png");
 
 	ff.init(device.Get());
-	ds.init(device.Get());
+	ds.init(device.Get(), background_sprite);
 
 	return true;
 }
