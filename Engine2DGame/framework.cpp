@@ -217,8 +217,6 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 		timer = 4.8;
 	}
 
-	bug->render(immediate_context.Get(), 100, 100, 800, 800);
-
 	if (timer <= 5)
 	{
 		background_sprite->render(immediate_context.Get(), 0, 0, 1280, 720);
