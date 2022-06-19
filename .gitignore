@@ -27,5 +27,4 @@ packages
 /Tests
 /wiki
 /out
-/x64
-/x64/Debug
+x64

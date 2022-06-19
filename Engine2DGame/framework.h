@@ -52,7 +52,6 @@ public:
 	std::shared_ptr<sprite> background_sprite;
 	std::unique_ptr<sprite> font_sprite;
 	std::unique_ptr<sprite> font_sprite_d;
-	std::unique_ptr<sprite> bug;
 
 	FlameFont ff;
 	DissolveShader ds;
@@ -97,10 +96,7 @@ public:
 				calculate_frame_stats();
 				update(tictoc.time_interval());
 				render(tictoc.time_interval());
-				if (timer >= 10)
-				{
-					timer = 0;
-				}
+
 			}
 		}
 
