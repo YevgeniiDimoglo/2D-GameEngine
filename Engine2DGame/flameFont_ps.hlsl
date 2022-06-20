@@ -12,8 +12,8 @@ float4 main(VS_OUT pin) : SV_TARGET
 	float4 color = color_map.Sample(color_sampler_state, pin.texcoord) * pin.color;
 
 	float mask_value = mask_texture.Sample(color_sampler_state, pin.texcoord + scroll_directionY * parameters.x);
-	float mask_value2 = mask_texture2.Sample(color_sampler_state, pin.texcoord + scroll_directionY * 2 * parameters.x);
-	float mask_value3 = mask_texture3.Sample(color_sampler_state, pin.texcoord + scroll_directionX * 0.3 - scroll_directionY * 0.3) + mask_texture3.Sample(color_sampler_state, pin.texcoord - scroll_directionX * 0.3 - scroll_directionY * 0.3);
+	float mask_value2 = mask_texture2.Sample(color_sampler_state, pin.texcoord + scroll_directionY * parameters.x);
+	float mask_value3 = mask_texture3.Sample(color_sampler_state, pin.texcoord);
 	float mask_value4 = mask_texture4.Sample(color_sampler_state, pin.texcoord);
 
 	float mask_result = mask_value * mask_value2 * mask_value3 + mask_value4;

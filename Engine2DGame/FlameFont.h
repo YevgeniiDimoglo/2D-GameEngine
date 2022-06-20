@@ -65,5 +65,6 @@ private:
 	std::unique_ptr<sprite> letter_backE;
 	std::unique_ptr<sprite> letter_frontS;
 	std::unique_ptr<sprite> letter_backS;
+	std::unique_ptr<sprite> pureFlame;
 
 };

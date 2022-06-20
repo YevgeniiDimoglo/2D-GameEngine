@@ -14,6 +14,7 @@
 #include "shader.h"
 #include "FlameFont.h"
 #include "dissolve.h"
+#include "Player.h"
 
 #ifdef USE_IMGUI
 #include "imgui/imgui.h"
@@ -28,6 +29,8 @@ CONST LONG SCREEN_WIDTH{ 1280 };
 CONST LONG SCREEN_HEIGHT{ 720 };
 CONST BOOL FULLSCREEN{ FALSE };
 CONST LPCWSTR APPLICATION_NAME{ L"X3DGP" };
+
+#define PI  3.14159265358979323846f
 
 class framework
 {
@@ -55,6 +58,8 @@ public:
 
 	FlameFont ff;
 	DissolveShader ds;
+	Player pl;
+
 	float timer;
 
 	framework(HWND hwnd);

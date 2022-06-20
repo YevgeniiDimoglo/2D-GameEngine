@@ -162,6 +162,7 @@ bool framework::initialize()
 
 	ff.init(device.Get());
 	ds.init(device.Get(), background_sprite);
+	pl.init(device.Get());
 
 	return true;
 }
@@ -177,12 +178,38 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 
 #ifdef USE_IMGUI
 	ImGui::Begin("ImGUI");
-	ImGui::SliderFloat("TIMER", &timer, 0.0f, +10.0f);
+	ImGui::SliderFloat("TIMER", &timer, 0.0f, +15.0f);
 
 	ImGui::End();
 #endif
 
 	timer += elapsed_time * 0.5f;
+
+	if (GetAsyncKeyState(VK_RETURN) < 0)
+	{
+		timer = 4.8f;
+	}
+
+	if (GetAsyncKeyState(VK_UP) < 0)
+	{
+		pl.update({ 10 * sinf(pl.getAngle() * PI / 180.0f), 10 * -cosf(pl.getAngle() * PI / 180.0f) }, 0);
+	}
+	if (GetAsyncKeyState(VK_DOWN) < 0)
+	{
+		pl.update({ -10 * sinf(pl.getAngle() * PI / 180.0f), -10 * -cosf(pl.getAngle() * PI / 180.0f) }, 0);
+	}
+
+	if (GetAsyncKeyState(0x51) < 0)
+	{
+		pl.update({ 0, 0 }, -3);
+	}
+
+	if (GetAsyncKeyState(0x45) < 0)
+	{
+		pl.update({0, 0}, 3);
+	}
+
+
 	if (timer >= 10)
 	{
 		timer = 9.9f;
@@ -209,12 +236,6 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 	immediate_context->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
 	immediate_context->RSSetState(rasterizer_state.Get());
 
-
-	if (GetAsyncKeyState(VK_RETURN) < 0)
-	{
-		timer = 4.8;
-	}
-
 	if (timer <= 5)
 	{
 		background_sprite->render(immediate_context.Get(), 0, 0, 1280, 720);
@@ -239,6 +260,8 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 		}
 		
 	}
+
+	pl.render(device.Get(), immediate_context.Get(), timer);
 
 	if (timer <= 9.5)
 	{

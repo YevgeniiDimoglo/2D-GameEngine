@@ -14,6 +14,7 @@ void FlameFont::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 	letter_backE = std::make_unique<sprite>(device.Get(), L".\\resources\\FlameLetters\\ShapeTextureE.png");
 	letter_frontS = std::make_unique<sprite>(device.Get(), L".\\resources\\FlameLetters\\LetterTextureS.png");
 	letter_backS = std::make_unique<sprite>(device.Get(), L".\\resources\\FlameLetters\\ShapeTextureS.png");
+	pureFlame = std::make_unique<sprite>(device.Get(), L".\\resources\\FlameLetters\\ShapeTextureFull.png");
 
 	load_texture_from_file(device.Get(), L".\\resources\\FlameLetters\\NoiseTexture1.png", mask_texture_noise1.GetAddressOf(), &mask_texture2dDesc);
 	load_texture_from_file(device.Get(), L".\\resources\\FlameLetters\\NoiseTexture2.png", mask_texture_noise2.GetAddressOf(), &mask_texture2dDesc);
@@ -134,6 +135,7 @@ void FlameFont::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::W
 		letter_backC->render(immediate_context.Get(), 512 - 128, 128, 256, 256);
 		letter_backE->render(immediate_context.Get(), 768 - 128, 128, 256, 256);
 		letter_backS->render(immediate_context.Get(), 1024 - 128, 128, 256, 256);
+		pureFlame->render(immediate_context.Get(), 512, 512 - 128, 256, 256);
 	}
 
 
