@@ -11,7 +11,7 @@ void Player::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 	pp.pos = { 512, 512 };
 	pp.angle = 0;
 
-	spritePlayer = std::make_unique<sprite>(device.Get(), L".\\resources\\player\\player.png");
+	spritePlayer = std::make_unique<sprite>(device.Get(), L".\\resources\\player\\player2.png");
 	spriteJet = std::make_unique<sprite>(device.Get(), L".\\resources\\FlameLetters\\ShapeTextureFull.png");
 	
 
@@ -134,10 +134,28 @@ void Player::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL:
 		immediate_context->PSSetShaderResources(3, 1, mask_texture_flame1.GetAddressOf());
 		immediate_context->PSSetShaderResources(4, 1, mask_texture_flame2.GetAddressOf());
 
-		spriteJet->render(immediate_context.Get(), pp.pos.x + 34, pp.pos.y + 60, 20, 40, 1.0f, 1.0, 1.0f, 1.0f, 180 + pp.angle);
-		spriteJet->render(immediate_context.Get(), pp.pos.x + 72, pp.pos.y + 60, 20, 40, 1.0f, 1.0, 1.0f, 1.0f, 180 + pp.angle);
-	}
+		float tempX1 = cosf(pp.angle * 3.14 / 180) * (pp.pos.x + 45 - (pp.pos.x + 64)) - sinf(pp.angle * 3.14 / 180) * (pp.pos.y + 80 - (pp.pos.y + 64)) + pp.pos.x + 64;
+		float tempY1 = sinf(pp.angle * 3.14 / 180) * (pp.pos.x + 45 - (pp.pos.x + 64)) + cosf(pp.angle * 3.14 / 180) * (pp.pos.y + 80 - (pp.pos.y + 64)) + pp.pos.y + 64;
+		float tempX2 = cosf(pp.angle * 3.14 / 180) * (pp.pos.x + 83 - (pp.pos.x + 64)) - sinf(pp.angle * 3.14 / 180) * (pp.pos.y + 80 - (pp.pos.y + 64)) + pp.pos.x + 64;
+		float tempY2 = sinf(pp.angle * 3.14 / 180) * (pp.pos.x + 83 - (pp.pos.x + 64)) + cosf(pp.angle * 3.14 / 180) * (pp.pos.y + 80 - (pp.pos.y + 64)) + pp.pos.y + 64;
 
+		if (pp.act == 0)
+		{
+			spriteJet->render(immediate_context.Get(), tempX1 - 10, tempY1 - 20, 20, 40, 1.0f, 1.0, 1.0f, 1.0f, 180 + pp.angle);
+			spriteJet->render(immediate_context.Get(), tempX2 - 10, tempY2 - 20, 20, 40, 1.0f, 1.0, 1.0f, 1.0f, 180 + pp.angle);
+		}
+		if (pp.act == 1)
+		{
+			spriteJet->render(immediate_context.Get(), tempX1 - 10, tempY1 - 40, 20, 80, 1.0f, 1.0, 1.0f, 1.0f, 180 + pp.angle);
+			spriteJet->render(immediate_context.Get(), tempX2 - 10, tempY2 - 40, 20, 80, 1.0f, 1.0, 1.0f, 1.0f, 180 + pp.angle);
+		}		
+		if (pp.act == 2)
+		{
+			spriteJet->render(immediate_context.Get(), tempX1 - 10, tempY1 - 10, 20, 20, 1.0f, 1.0, 1.0f, 1.0f, 180 + pp.angle);
+			spriteJet->render(immediate_context.Get(), tempX2 - 10, tempY2 - 10, 20, 20, 1.0f, 1.0, 1.0f, 1.0f, 180 + pp.angle);
+		}
+
+	}
 
 	{
 		immediate_context->IASetInputLayout(sprite_input_layout_player.Get());
@@ -147,7 +165,9 @@ void Player::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL:
 		immediate_context->PSSetSamplers(0, 1, sampler_state_flame.GetAddressOf());
 
 		spritePlayer->render(immediate_context.Get(), pp.pos.x, pp.pos.y, 128, 128, 1.0f, 1.0f, 1.0f, 1.0f, pp.angle);
+
 	}
+
 }
 
 Player::~Player()

@@ -190,21 +190,25 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 		timer = 4.8f;
 	}
 
-	if (GetAsyncKeyState(VK_UP) < 0)
+	pl.setAct(0);
+
+	if (GetAsyncKeyState(0x57) < 0)
 	{
-		pl.update({ 10 * sinf(pl.getAngle() * PI / 180.0f), 10 * -cosf(pl.getAngle() * PI / 180.0f) }, 0);
+		pl.update({ 5 * sinf(pl.getAngle() * PI / 180.0f), 5 * -cosf(pl.getAngle() * PI / 180.0f) }, 0);
+		pl.setAct(1);
 	}
-	if (GetAsyncKeyState(VK_DOWN) < 0)
+	if (GetAsyncKeyState(0x53) < 0)
 	{
-		pl.update({ -10 * sinf(pl.getAngle() * PI / 180.0f), -10 * -cosf(pl.getAngle() * PI / 180.0f) }, 0);
+		pl.update({ -5 * sinf(pl.getAngle() * PI / 180.0f), -5 * -cosf(pl.getAngle() * PI / 180.0f) }, 0);
+		pl.setAct(2);
 	}
 
-	if (GetAsyncKeyState(0x51) < 0)
+	if (GetAsyncKeyState(0x41) < 0)
 	{
 		pl.update({ 0, 0 }, -3);
 	}
 
-	if (GetAsyncKeyState(0x45) < 0)
+	if (GetAsyncKeyState(0x44) < 0)
 	{
 		pl.update({0, 0}, 3);
 	}

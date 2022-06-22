@@ -31,6 +31,7 @@ public:
 
 	DirectX::XMFLOAT2 getPos() { return pp.pos; }
 	float getAngle() { return pp.angle; }
+	void setAct(int act) { this->pp.act = act; }
 
 private:
 
