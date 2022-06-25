@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <sstream>
+#include <vector>
 
 #include <d3d11.h>
 #include <wrl.h>
@@ -13,6 +14,7 @@
 #include "sprite.h"
 #include "shader.h"
 #include "texture.h"
+#include "Shot.h"
 
 #define PLAYER_TEX_W            (128.0f)   
 #define PLAYER_TEX_H            (128.0f)    
@@ -27,6 +29,7 @@ public:
 
 	void init(Microsoft::WRL::ComPtr<ID3D11Device> device);
 	void render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time);
+	Shot* searchSet(std::vector<Shot>& shots);
 	void update(DirectX::XMFLOAT2 pos, float angle);
 
 	DirectX::XMFLOAT2 getPos() { return pp.pos; }

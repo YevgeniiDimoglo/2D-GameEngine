@@ -7,9 +7,8 @@ Enemy::Enemy()
 
 void Enemy::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 {
-
-	pp.pos = { 100, 200 };
-	pp.angle = -180;
+	ep.pos = { 100, 200 };
+	ep.angle = -180;
 
 	spriteEnemy = std::make_unique<sprite>(device.Get(), L".\\resources\\enemy\\enemy.png");
 
@@ -59,9 +58,9 @@ void Enemy::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 
 void Enemy::update(DirectX::XMFLOAT2 pos, float angle)
 {
-	pp.pos.x += pos.x;
-	pp.pos.y += pos.y;
-	pp.angle += angle;
+	ep.pos.x += pos.x;
+	ep.pos.y += pos.y;
+	ep.angle += angle;
 }
 
 void Enemy::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time)
@@ -74,7 +73,7 @@ void Enemy::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::
 
 		immediate_context->PSSetSamplers(0, 1, sampler_state_enemy.GetAddressOf());
 
-		spriteEnemy->render(immediate_context.Get(), pp.pos.x, pp.pos.y, 64, 64, 1.0f, 1.0f, 1.0f, 1.0f, pp.angle);
+		spriteEnemy->render(immediate_context.Get(), ep.pos.x, ep.pos.y, 64, 64, 1.0f, 1.0f, 1.0f, 1.0f, ep.angle);
 
 	}
 

@@ -1,26 +1,40 @@
 #pragma once
 
-#include "Player.h"
+#include <windows.h>
+#include <tchar.h>
+#include <sstream>
 
-#define ENEMY_TEX_W            (128.0f)   
-#define ENEMY_TEX_H            (128.0f)    
-#define ENEMY_PIVOT_X          (64.0f)     
-#define ENEMY_PIVOT_Y          (64.0f)  
+#include <d3d11.h>
+#include <wrl.h>
+#include <WICTextureLoader.h>
 
-class Enemy :
-    public Player
+#include "misc.h"
+#include "high_resolution_timer.h"
+#include "sprite.h"
+#include "shader.h"
+#include "texture.h"
+
+#define SHOT_TEX_W            (32.0f)   
+#define SHOT_TEX_H            (32.0f)    
+#define SHOT_PIVOT_X          (16.0f)     
+#define SHOT_PIVOT_Y          (16.0f)    
+
+class Shot
 {
 public:
-	Enemy();
-	~Enemy();
+	Shot();
+	~Shot();
 
 	void init(Microsoft::WRL::ComPtr<ID3D11Device> device);
 	void render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time);
 	void update(DirectX::XMFLOAT2 pos, float angle);
 
-	DirectX::XMFLOAT2 getPos() { return ep.pos; }
-	float getAngle() { return ep.angle; }
-	void setAct(int act) { this->ep.act = act; }
+	DirectX::XMFLOAT2 getPos() { return sp.pos; }
+	float getAngle() { return sp.angle; }
+	const int getAct() { return sp.act; }
+	const int getState() { return sp.state; }
+	void setAct(int act) { this->sp.act = act; }
+	void setState(int state) { this->sp.state = state; }
 
 private:
 
@@ -53,13 +67,13 @@ private:
 		float               angle;      // Šp“x
 
 		int                 hp;
-	} ep;
+	} sp;
 
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> sprite_vertex_shader_enemy;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> sprite_input_layout_enemy;
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> sprite_pixel_shader_enemy;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_state_enemy;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> sprite_vertex_shader_shot;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> sprite_input_layout_shot;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> sprite_pixel_shader_shot;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_state_shot;
 
-	std::unique_ptr<sprite> spriteEnemy;
+	std::unique_ptr<sprite> spriteShot;
 };
 

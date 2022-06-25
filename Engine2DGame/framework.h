@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <sstream>
+#include <vector>
 
 #include <d3d11.h>
 #include <wrl.h>
@@ -12,11 +13,13 @@
 #include "high_resolution_timer.h"
 #include "sprite.h"
 #include "shader.h"
+
 #include "FlameFont.h"
 #include "dissolve.h"
 #include "Player.h"
 #include "Cloud.h"
 #include "Enemy.h"
+#include "Shot.h"
 
 #ifdef USE_IMGUI
 #include "imgui/imgui.h"
@@ -31,6 +34,7 @@ CONST LONG SCREEN_WIDTH{ 1280 };
 CONST LONG SCREEN_HEIGHT{ 720 };
 CONST BOOL FULLSCREEN{ FALSE };
 CONST LPCWSTR APPLICATION_NAME{ L"X3DGP" };
+CONST INT MAX_COUNT{ 512 };
 
 #define PI  3.14159265358979323846f
 
@@ -64,8 +68,11 @@ public:
 	Player pl;
 	CloudShader cl;
 	Enemy en;
+	std::vector<Shot> listOfShots{512};
 
 	float timer;
+	float oldTimer;
+	bool checkKey = false;
 
 	framework(HWND hwnd);
 	~framework();

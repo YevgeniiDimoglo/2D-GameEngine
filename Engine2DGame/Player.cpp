@@ -187,6 +187,20 @@ void Player::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL:
 
 }
 
+Shot* Player::searchSet(std::vector<Shot>& shots)
+{
+	for (auto p = shots.begin(); p != shots.end(); ++p)
+	{
+		if (p->getAct() != 10) continue;
+		auto index = std::distance(shots.begin(), p);
+		p->setState(index);
+		return &(*p);
+	}
+	return NULL;
+}
+
+
+
 Player::~Player()
 {
 }

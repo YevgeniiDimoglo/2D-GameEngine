@@ -167,6 +167,11 @@ bool framework::initialize()
 	cl.init(device.Get(), cloud_sprite);
 	en.init(device.Get());
 
+	for (auto p = listOfShots.begin(); p!= listOfShots.end(); ++p)
+	{
+		p->init(device.Get());
+	}
+
 
 	return true;
 }
@@ -217,7 +222,46 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 		pl.update({0, 0}, 3);
 	}
 
+	if (GetAsyncKeyState(0x20) < 0)
+	{
+		if (checkKey == false)
+		{
+			checkKey = true;
+			oldTimer = timer;
+
+			Shot* shot = pl.searchSet(listOfShots);
+			shot->setAct(0);
+
+			if (shot->getState() % 2 == 0)
+			{
+				shot->update(pl.getPos(), pl.getAngle());
+			}
+			else
+			{
+				shot->update({ pl.getPos().x + 40, pl.getPos().y }, pl.getAngle());
+			}
+		}
+
+	}
+
+	for (auto p = listOfShots.begin(); p != listOfShots.end(); ++p)
+	{
+		if (p->getPos().x < - 256 || p->getPos().x > 1280 + 256 || p->getPos().y < -256 || p->getPos().y > 1280 + 256)
+		{
+			p->setAct(10);
+		}
+		if (p->getAct() != 10)
+		{
+			p->update(pl.getPos(), pl.getAngle());
+		}
+	}
+
 	en.update({ 0, 0 }, 1);
+
+	if (timer - oldTimer > 0.1f)
+	{
+		checkKey = false;
+	}
 
 	if (timer >= 3600)
 	{
@@ -263,6 +307,13 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 		{
 			pl.render(device.Get(), immediate_context.Get(), timer);
 			en.render(device.Get(), immediate_context.Get(), timer);
+			for (auto p = listOfShots.begin(); p != listOfShots.end(); ++p)
+			{
+				if (p->getAct() != 10)
+				{
+					p->render(device.Get(), immediate_context.Get(), timer);
+				}
+			}
 		}
 	}
 

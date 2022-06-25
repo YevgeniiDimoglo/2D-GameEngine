@@ -68,63 +68,63 @@ dcl_temps 8
 //   v2.x <- pin.texcoord.x; v2.y <- pin.texcoord.y; 
 //   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
 //
-#line 37 "C:\Users\2220175\Documents\College\Engine2DGame\cloud_shader_ps.hlsl"
+#line 41 "C:\Users\2220175\Documents\College\Engine2DGame\cloud_shader_ps.hlsl"
 div r0.xy, v2.xyxx, l(0.500000, 0.500000, 0.000000, 0.000000)  // r0.x <- uv.x; r0.y <- uv.y
 
-#line 38
+#line 42
 mov r0.zw, l(-0.000000,-0.000000,-0.500000,-0.500000)
 add r0.yz, r0.zzwz, r0.xxyx  // r0.y <- uv.x; r0.z <- uv.y
 
-#line 39
+#line 43
 div r0.w, cb3[0].x, cb3[0].y
 mul r0.x, r0.w, r0.y  // r0.x <- uv.x
 
-#line 40
+#line 44
 mov r1.xyz, l(0.500000,0.700000,0.800000,0)  // r1.x <- sky.x; r1.y <- sky.y; r1.z <- sky.z
 
-#line 44
+#line 48
 mov r0.y, l(0.010000)  // r0.y <- v
 
-#line 47
+#line 51
 mov r2.xyz, l(1.000000,1.000000,1.000000,0)  // r2.x <- cloudCol.x; r2.y <- cloudCol.y; r2.z <- cloudCol.z
 
-#line 49
+#line 53
 mul r3.xy, r0.xzxx, l(1.000000, 1.000000, 0.000000, 0.000000)  // r3.x <- scale.x; r3.y <- scale.y
 
-#line 50
+#line 54
 nop 
 mul r4.x, r0.x, l(10.000000)
 mul r4.y, r0.z, l(10.000000)
 
-#line 8
+#line 12
 mov r0.w, l(2.000000)  // r0.w <- kF
 
-#line 10
+#line 14
 round_ni r3.zw, r4.xxxy  // r3.z <- i.x; r3.w <- i.y
 
-#line 11
+#line 15
 frc r4.zw, r4.xxxy  // r4.z <- f.x; r4.w <- f.y
 
-#line 12
+#line 16
 mul r5.xy, r4.zwzz, r4.zwzz
 mul r4.zw, r4.zzzw, l(0.000000, 0.000000, 2.000000, 2.000000)
 mov r4.zw, -r4.zzzw
 add r4.zw, r4.zzzw, l(0.000000, 0.000000, 3.000000, 3.000000)
 mul r4.zw, r4.zzzw, r5.xxxy  // r4.z <- f.x; r4.w <- f.y
 
-#line 13
+#line 17
 nop 
 itof r5.xy, l(0, 0, 0, 0)
 add r5.xy, r3.zwzz, r5.xyxx
 
-#line 4
+#line 8
 mul r1.w, r5.y, r5.x
 itof r5.x, l(0)
 mov r5.y, l(1.571000)
 add r5.xy, r1.wwww, r5.xyxx
 sincos r5.xy, null, r5.xyxx  // r5.x <- <g return value>.x; r5.y <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r1.w, r4.xyxx, r5.xyxx
 mul r1.w, r0.w, r1.w
 sincos r1.w, null, r1.w
@@ -132,14 +132,14 @@ nop
 itof r5.xy, l(1, 0, 0, 0)
 add r5.xy, r3.zwzz, r5.xyxx
 
-#line 4
+#line 8
 mul r2.w, r5.y, r5.x
 itof r5.x, l(0)
 mov r5.y, l(1.571000)
 add r5.xy, r2.wwww, r5.xyxx
 sincos r5.xy, null, r5.xyxx  // r5.x <- <g return value>.x; r5.y <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r2.w, r4.xyxx, r5.xyxx
 mul r2.w, r0.w, r2.w
 sincos r2.w, null, r2.w
@@ -151,14 +151,14 @@ nop
 itof r5.xy, l(0, 1, 0, 0)
 add r5.xy, r3.zwzz, r5.xyxx
 
-#line 4
+#line 8
 mul r2.w, r5.y, r5.x
 itof r5.x, l(0)
 mov r5.y, l(1.571000)
 add r5.xy, r2.wwww, r5.xyxx
 sincos r5.xy, null, r5.xyxx  // r5.x <- <g return value>.x; r5.y <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r2.w, r4.xyxx, r5.xyxx
 mul r2.w, r0.w, r2.w
 sincos r2.w, null, r2.w
@@ -166,14 +166,14 @@ nop
 itof r5.xy, l(1, 1, 0, 0)
 add r3.zw, r3.zzzw, r5.xxxy
 
-#line 4
+#line 8
 mul r3.z, r3.w, r3.z
 itof r5.x, l(0)
 mov r5.y, l(1.571000)
 add r3.zw, r3.zzzz, r5.xxxy
 sincos r3.zw, null, r3.zzzw  // r3.z <- <g return value>.x; r3.w <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r3.z, r4.xyxx, r3.zwzz
 mul r0.w, r0.w, r3.z
 sincos r0.w, null, r0.w
@@ -186,40 +186,40 @@ add r0.w, r0.w, r2.w
 mul r0.w, r0.w, r4.w
 add r4.x, r0.w, r1.w  // r4.x <- <noise return value>
 
-#line 50
+#line 54
 nop 
 mul r5.x, r0.x, l(10.000000)
 mul r5.y, r0.z, l(10.000000)
 
-#line 8
+#line 12
 mov r0.w, l(2.000000)  // r0.w <- kF
 
-#line 10
+#line 14
 round_ni r3.zw, r5.xxxy  // r3.z <- i.x; r3.w <- i.y
 
-#line 11
+#line 15
 frc r4.zw, r5.xxxy
 
-#line 12
+#line 16
 mul r5.zw, r4.zzzw, r4.zzzw
 mul r4.zw, r4.zzzw, l(0.000000, 0.000000, 2.000000, 2.000000)
 mov r4.zw, -r4.zzzw
 add r4.zw, r4.zzzw, l(0.000000, 0.000000, 3.000000, 3.000000)
 mul r4.zw, r4.zzzw, r5.zzzw  // r4.z <- f.x; r4.w <- f.y
 
-#line 13
+#line 17
 nop 
 itof r5.zw, l(0, 0, 0, 0)
 add r5.zw, r3.zzzw, r5.zzzw
 
-#line 4
+#line 8
 mul r1.w, r5.w, r5.z
 itof r6.x, l(0)
 mov r6.y, l(1.571000)
 add r5.zw, r1.wwww, r6.xxxy
 sincos r5.zw, null, r5.zzzw  // r5.z <- <g return value>.x; r5.w <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r1.w, r5.xyxx, r5.zwzz
 mul r1.w, r0.w, r1.w
 sincos r1.w, null, r1.w
@@ -227,14 +227,14 @@ nop
 itof r5.zw, l(0, 0, 1, 0)
 add r5.zw, r3.zzzw, r5.zzzw
 
-#line 4
+#line 8
 mul r2.w, r5.w, r5.z
 itof r6.x, l(0)
 mov r6.y, l(1.571000)
 add r5.zw, r2.wwww, r6.xxxy
 sincos r5.zw, null, r5.zzzw  // r5.z <- <g return value>.x; r5.w <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r2.w, r5.xyxx, r5.zwzz
 mul r2.w, r0.w, r2.w
 sincos r2.w, null, r2.w
@@ -246,14 +246,14 @@ nop
 itof r5.zw, l(0, 0, 0, 1)
 add r5.zw, r3.zzzw, r5.zzzw
 
-#line 4
+#line 8
 mul r2.w, r5.w, r5.z
 itof r6.x, l(0)
 mov r6.y, l(1.571000)
 add r5.zw, r2.wwww, r6.xxxy
 sincos r5.zw, null, r5.zzzw  // r5.z <- <g return value>.x; r5.w <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r2.w, r5.xyxx, r5.zwzz
 mul r2.w, r0.w, r2.w
 sincos r2.w, null, r2.w
@@ -261,14 +261,14 @@ nop
 itof r5.zw, l(0, 0, 1, 1)
 add r3.zw, r3.zzzw, r5.zzzw
 
-#line 4
+#line 8
 mul r3.z, r3.w, r3.z
 itof r6.x, l(0)
 mov r6.y, l(1.571000)
 add r3.zw, r3.zzzz, r6.xxxy
 sincos r3.zw, null, r3.zzzw  // r3.z <- <g return value>.x; r3.w <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r3.z, r5.xyxx, r3.zwzz
 mul r0.w, r0.w, r3.z
 sincos r0.w, null, r0.w
@@ -281,13 +281,13 @@ add r0.w, r0.w, r2.w
 mul r0.w, r0.w, r4.w
 add r4.y, r0.w, r1.w  // r4.y <- <noise return value>
 
-#line 50
+#line 54
 mul r3.zw, r4.xxxy, l(0.000000, 0.000000, 0.008000, 0.008000)  // r3.z <- turbulence.x; r3.w <- turbulence.y
 
-#line 51
+#line 55
 add r3.xy, r3.zwzz, r3.xyxx
 
-#line 52
+#line 56
 nop 
 mul r0.w, r0.y, cb1[0].x
 mul r0.w, r0.w, l(2.000000)
@@ -301,13 +301,13 @@ mul r1.w, r1.w, l(50.000000)
 mov r1.w, -r1.w
 add r1.w, r1.w, r3.y
 
-#line 22
+#line 26
 mov r2.w, l(0.500000)  // r2.w <- amp
 
-#line 23
+#line 27
 mov r3.x, l(0)  // r3.x <- h
 
-#line 24
+#line 28
 mov r3.y, l(0)  // r3.y <- i
 mov r4.x, r0.w  // r4.x <- p.x
 mov r4.y, r1.w  // r4.y <- p.y
@@ -318,40 +318,40 @@ loop
   ilt r4.w, r4.z, l(4)
   breakc_z r4.w
 
-#line 25
+#line 29
   nop 
   mov r4.x, r4.x
   mov r4.y, r4.y
 
-#line 8
+#line 12
   mov r4.w, l(2.000000)  // r4.w <- kF
 
-#line 10
+#line 14
   round_ni r5.xy, r4.xyxx  // r5.x <- i.x; r5.y <- i.y
 
-#line 11
+#line 15
   frc r5.zw, r4.xxxy  // r5.z <- f.x; r5.w <- f.y
 
-#line 12
+#line 16
   mul r6.xy, r5.zwzz, r5.zwzz
   mul r5.zw, r5.zzzw, l(0.000000, 0.000000, 2.000000, 2.000000)
   mov r5.zw, -r5.zzzw
   add r5.zw, r5.zzzw, l(0.000000, 0.000000, 3.000000, 3.000000)
   mul r5.zw, r5.zzzw, r6.xxxy  // r5.z <- f.x; r5.w <- f.y
 
-#line 13
+#line 17
   nop 
   itof r6.xy, l(0, 0, 0, 0)
   add r6.xy, r5.xyxx, r6.xyxx
 
-#line 4
+#line 8
   mul r6.x, r6.y, r6.x
   itof r7.x, l(0)
   mov r7.y, l(1.571000)
   add r6.xy, r6.xxxx, r7.xyxx
   sincos r6.xy, null, r6.xyxx  // r6.x <- <g return value>.x; r6.y <- <g return value>.y
 
-#line 13
+#line 17
   dp2 r6.x, r4.xyxx, r6.xyxx
   mul r6.x, r4.w, r6.x
   sincos r6.x, null, r6.x
@@ -359,14 +359,14 @@ loop
   itof r6.yz, l(0, 1, 0, 0)
   add r6.yz, r5.xxyx, r6.yyzy
 
-#line 4
+#line 8
   mul r6.y, r6.z, r6.y
   itof r7.x, l(0)
   mov r7.y, l(1.571000)
   add r6.yz, r6.yyyy, r7.xxyx
   sincos r6.yz, null, r6.yyzy  // r6.y <- <g return value>.x; r6.z <- <g return value>.y
 
-#line 13
+#line 17
   dp2 r6.y, r4.xyxx, r6.yzyy
   mul r6.y, r4.w, r6.y
   sincos r6.y, null, r6.y
@@ -378,14 +378,14 @@ loop
   itof r6.yz, l(0, 0, 1, 0)
   add r6.yz, r5.xxyx, r6.yyzy
 
-#line 4
+#line 8
   mul r6.y, r6.z, r6.y
   itof r7.x, l(0)
   mov r7.y, l(1.571000)
   add r6.yz, r6.yyyy, r7.xxyx
   sincos r6.yz, null, r6.yyzy  // r6.y <- <g return value>.x; r6.z <- <g return value>.y
 
-#line 13
+#line 17
   dp2 r6.y, r4.xyxx, r6.yzyy
   mul r6.y, r4.w, r6.y
   sincos r6.y, null, r6.y
@@ -393,14 +393,14 @@ loop
   itof r6.zw, l(0, 0, 1, 1)
   add r5.xy, r5.xyxx, r6.zwzz
 
-#line 4
+#line 8
   mul r5.x, r5.y, r5.x
   itof r7.x, l(0)
   mov r7.y, l(1.571000)
   add r5.xy, r5.xxxx, r7.xyxx
   sincos r5.xy, null, r5.xyxx  // r5.x <- <g return value>.x; r5.y <- <g return value>.y
 
-#line 13
+#line 17
   dp2 r5.x, r4.xyxx, r5.xyxx
   mul r4.w, r4.w, r5.x
   sincos r4.w, null, r4.w
@@ -413,33 +413,33 @@ loop
   mul r4.w, r4.w, r5.w
   add r4.w, r4.w, r6.x  // r4.w <- <noise return value>
 
-#line 25
+#line 29
   mov r4.w, r4.w  // r4.w <- n
 
-#line 26
+#line 30
   mul r4.w, r3.z, r4.w
   add r3.w, r3.w, r4.w
 
-#line 27
+#line 31
   mul r3.z, r3.z, l(0.500000)
 
-#line 28
+#line 32
   mul r5.xy, r4.xxxx, cb0[0].xyxx
   mul r5.zw, r4.yyyy, cb0[1].xxxy
   add r4.xy, r5.zwzz, r5.xyxx
 
-#line 29
+#line 33
   iadd r4.z, r4.z, l(1)
 endloop 
 
-#line 31
+#line 35
 mul r0.w, r3.w, l(0.500000)
 add r0.w, r0.w, l(0.500000)  // r0.w <- <fbm4 return value>
 
-#line 52
+#line 56
 mov r0.w, r0.w  // r0.w <- n1
 
-#line 53
+#line 57
 mov r1.w, l(-0.500000)
 add r2.w, r1.w, l(0.800000)
 add r0.w, r0.w, r1.w
@@ -456,43 +456,43 @@ add r3.xyz, r2.xyzx, r3.xyzx
 mul r3.xyz, r0.wwww, r3.xyzx
 add r1.xyz, r1.xyzx, r3.xyzx  // r1.x <- col.x; r1.y <- col.y; r1.z <- col.z
 
-#line 56
+#line 60
 mul r3.xy, r0.xzxx, l(0.500000, 0.500000, 0.000000, 0.000000)  // r3.x <- scale.x; r3.y <- scale.y
 
-#line 57
+#line 61
 nop 
 mul r4.x, r0.x, l(2.000000)
 mul r4.y, r0.z, l(2.100000)
 
-#line 8
+#line 12
 mov r0.w, l(2.000000)  // r0.w <- kF
 
-#line 10
+#line 14
 round_ni r3.zw, r4.xxxy  // r3.z <- i.x; r3.w <- i.y
 
-#line 11
+#line 15
 frc r4.zw, r4.xxxy  // r4.z <- f.x; r4.w <- f.y
 
-#line 12
+#line 16
 mul r5.xy, r4.zwzz, r4.zwzz
 mul r4.zw, r4.zzzw, l(0.000000, 0.000000, 2.000000, 2.000000)
 mov r4.zw, -r4.zzzw
 add r4.zw, r4.zzzw, l(0.000000, 0.000000, 3.000000, 3.000000)
 mul r4.zw, r4.zzzw, r5.xxxy  // r4.z <- f.x; r4.w <- f.y
 
-#line 13
+#line 17
 nop 
 itof r5.xy, l(0, 0, 0, 0)
 add r5.xy, r3.zwzz, r5.xyxx
 
-#line 4
+#line 8
 mul r1.w, r5.y, r5.x
 itof r5.x, l(0)
 mov r5.y, l(1.571000)
 add r5.xy, r1.wwww, r5.xyxx
 sincos r5.xy, null, r5.xyxx  // r5.x <- <g return value>.x; r5.y <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r1.w, r4.xyxx, r5.xyxx
 mul r1.w, r0.w, r1.w
 sincos r1.w, null, r1.w
@@ -500,14 +500,14 @@ nop
 itof r5.xy, l(1, 0, 0, 0)
 add r5.xy, r3.zwzz, r5.xyxx
 
-#line 4
+#line 8
 mul r2.w, r5.y, r5.x
 itof r5.x, l(0)
 mov r5.y, l(1.571000)
 add r5.xy, r2.wwww, r5.xyxx
 sincos r5.xy, null, r5.xyxx  // r5.x <- <g return value>.x; r5.y <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r2.w, r4.xyxx, r5.xyxx
 mul r2.w, r0.w, r2.w
 sincos r2.w, null, r2.w
@@ -519,14 +519,14 @@ nop
 itof r5.xy, l(0, 1, 0, 0)
 add r5.xy, r3.zwzz, r5.xyxx
 
-#line 4
+#line 8
 mul r2.w, r5.y, r5.x
 itof r5.x, l(0)
 mov r5.y, l(1.571000)
 add r5.xy, r2.wwww, r5.xyxx
 sincos r5.xy, null, r5.xyxx  // r5.x <- <g return value>.x; r5.y <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r2.w, r4.xyxx, r5.xyxx
 mul r2.w, r0.w, r2.w
 sincos r2.w, null, r2.w
@@ -534,14 +534,14 @@ nop
 itof r5.xy, l(1, 1, 0, 0)
 add r3.zw, r3.zzzw, r5.xxxy
 
-#line 4
+#line 8
 mul r3.z, r3.w, r3.z
 itof r5.x, l(0)
 mov r5.y, l(1.571000)
 add r3.zw, r3.zzzz, r5.xxxy
 sincos r3.zw, null, r3.zzzw  // r3.z <- <g return value>.x; r3.w <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r3.z, r4.xyxx, r3.zwzz
 mul r0.w, r0.w, r3.z
 sincos r0.w, null, r0.w
@@ -554,40 +554,40 @@ add r0.w, r0.w, r2.w
 mul r0.w, r0.w, r4.w
 add r4.x, r0.w, r1.w  // r4.x <- <noise return value>
 
-#line 57
+#line 61
 nop 
 mul r5.x, r0.x, l(1.500000)
 mul r5.y, r0.z, l(1.200000)
 
-#line 8
+#line 12
 mov r0.x, l(2.000000)  // r0.x <- kF
 
-#line 10
+#line 14
 round_ni r0.zw, r5.xxxy  // r0.z <- i.x; r0.w <- i.y
 
-#line 11
+#line 15
 frc r3.zw, r5.xxxy  // r3.z <- f.x; r3.w <- f.y
 
-#line 12
+#line 16
 mul r4.zw, r3.zzzw, r3.zzzw
 mul r3.zw, r3.zzzw, l(0.000000, 0.000000, 2.000000, 2.000000)
 mov r3.zw, -r3.zzzw
 add r3.zw, r3.zzzw, l(0.000000, 0.000000, 3.000000, 3.000000)
 mul r3.zw, r3.zzzw, r4.zzzw  // r3.z <- f.x; r3.w <- f.y
 
-#line 13
+#line 17
 nop 
 itof r4.zw, l(0, 0, 0, 0)
 add r4.zw, r0.zzzw, r4.zzzw
 
-#line 4
+#line 8
 mul r1.w, r4.w, r4.z
 itof r6.x, l(0)
 mov r6.y, l(1.571000)
 add r4.zw, r1.wwww, r6.xxxy
 sincos r4.zw, null, r4.zzzw  // r4.z <- <g return value>.x; r4.w <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r1.w, r5.xyxx, r4.zwzz
 mul r1.w, r0.x, r1.w
 sincos r1.w, null, r1.w
@@ -595,14 +595,14 @@ nop
 itof r4.zw, l(0, 0, 1, 0)
 add r4.zw, r0.zzzw, r4.zzzw
 
-#line 4
+#line 8
 mul r2.w, r4.w, r4.z
 itof r6.x, l(0)
 mov r6.y, l(1.571000)
 add r4.zw, r2.wwww, r6.xxxy
 sincos r4.zw, null, r4.zzzw  // r4.z <- <g return value>.x; r4.w <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r2.w, r5.xyxx, r4.zwzz
 mul r2.w, r0.x, r2.w
 sincos r2.w, null, r2.w
@@ -614,14 +614,14 @@ nop
 itof r4.zw, l(0, 0, 0, 1)
 add r4.zw, r0.zzzw, r4.zzzw
 
-#line 4
+#line 8
 mul r2.w, r4.w, r4.z
 itof r6.x, l(0)
 mov r6.y, l(1.571000)
 add r4.zw, r2.wwww, r6.xxxy
 sincos r4.zw, null, r4.zzzw  // r4.z <- <g return value>.x; r4.w <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r2.w, r5.xyxx, r4.zwzz
 mul r2.w, r0.x, r2.w
 sincos r2.w, null, r2.w
@@ -629,14 +629,14 @@ nop
 itof r4.zw, l(0, 0, 1, 1)
 add r0.zw, r0.zzzw, r4.zzzw
 
-#line 4
+#line 8
 mul r0.z, r0.w, r0.z
 itof r6.x, l(0)
 mov r6.y, l(1.571000)
 add r0.zw, r0.zzzz, r6.xxxy
 sincos r0.zw, null, r0.zzzw  // r0.z <- <g return value>.x; r0.w <- <g return value>.y
 
-#line 13
+#line 17
 dp2 r0.z, r5.xyxx, r0.zwzz
 mul r0.x, r0.z, r0.x
 sincos r0.x, null, r0.x
@@ -649,26 +649,26 @@ add r0.x, r0.z, r0.x
 mul r0.x, r0.x, r3.w
 add r4.y, r0.x, r1.w  // r4.y <- <noise return value>
 
-#line 57
+#line 61
 mul r0.xz, r4.xxyx, l(0.050000, 0.000000, 0.050000, 0.000000)  // r0.x <- turbulence.x; r0.z <- turbulence.y
 
-#line 58
+#line 62
 add r0.xz, r0.xxzx, r3.xxyx  // r0.x <- scale.x; r0.z <- scale.y
 
-#line 59
+#line 63
 nop 
 mul r0.y, r0.y, cb1[0].x
 sincos r0.y, null, r0.y
 mul r0.y, r0.y, l(20.000000)
 add r0.xy, r0.yyyy, r0.xzxx
 
-#line 22
+#line 26
 mov r0.z, l(0.500000)  // r0.z <- amp
 
-#line 23
+#line 27
 mov r0.w, l(0)  // r0.w <- h
 
-#line 24
+#line 28
 mov r1.w, l(0)  // r1.w <- i
 mov r3.x, r0.x  // r3.x <- p.x
 mov r3.y, r0.y  // r3.y <- p.y
@@ -679,40 +679,40 @@ loop
   ilt r4.x, r3.w, l(4)
   breakc_z r4.x
 
-#line 25
+#line 29
   nop 
   mov r3.x, r3.x
   mov r3.y, r3.y
 
-#line 8
+#line 12
   mov r4.x, l(2.000000)  // r4.x <- kF
 
-#line 10
+#line 14
   round_ni r4.yz, r3.xxyx  // r4.y <- i.x; r4.z <- i.y
 
-#line 11
+#line 15
   frc r5.xy, r3.xyxx  // r5.x <- f.x; r5.y <- f.y
 
-#line 12
+#line 16
   mul r5.zw, r5.xxxy, r5.xxxy
   mul r5.xy, r5.xyxx, l(2.000000, 2.000000, 0.000000, 0.000000)
   mov r5.xy, -r5.xyxx
   add r5.xy, r5.xyxx, l(3.000000, 3.000000, 0.000000, 0.000000)
   mul r5.xy, r5.xyxx, r5.zwzz  // r5.x <- f.x; r5.y <- f.y
 
-#line 13
+#line 17
   nop 
   itof r5.zw, l(0, 0, 0, 0)
   add r5.zw, r4.yyyz, r5.zzzw
 
-#line 4
+#line 8
   mul r4.w, r5.w, r5.z
   itof r6.x, l(0)
   mov r6.y, l(1.571000)
   add r5.zw, r4.wwww, r6.xxxy
   sincos r5.zw, null, r5.zzzw  // r5.z <- <g return value>.x; r5.w <- <g return value>.y
 
-#line 13
+#line 17
   dp2 r4.w, r3.xyxx, r5.zwzz
   mul r4.w, r4.w, r4.x
   sincos r4.w, null, r4.w
@@ -720,14 +720,14 @@ loop
   itof r5.zw, l(0, 0, 1, 0)
   add r5.zw, r4.yyyz, r5.zzzw
 
-#line 4
+#line 8
   mul r5.z, r5.w, r5.z
   itof r6.x, l(0)
   mov r6.y, l(1.571000)
   add r5.zw, r5.zzzz, r6.xxxy
   sincos r5.zw, null, r5.zzzw  // r5.z <- <g return value>.x; r5.w <- <g return value>.y
 
-#line 13
+#line 17
   dp2 r5.z, r3.xyxx, r5.zwzz
   mul r5.z, r4.x, r5.z
   sincos r5.z, null, r5.z
@@ -739,14 +739,14 @@ loop
   itof r5.zw, l(0, 0, 0, 1)
   add r5.zw, r4.yyyz, r5.zzzw
 
-#line 4
+#line 8
   mul r5.z, r5.w, r5.z
   itof r6.x, l(0)
   mov r6.y, l(1.571000)
   add r5.zw, r5.zzzz, r6.xxxy
   sincos r5.zw, null, r5.zzzw  // r5.z <- <g return value>.x; r5.w <- <g return value>.y
 
-#line 13
+#line 17
   dp2 r5.z, r3.xyxx, r5.zwzz
   mul r5.z, r4.x, r5.z
   sincos r5.z, null, r5.z
@@ -754,14 +754,14 @@ loop
   itof r6.xy, l(1, 1, 0, 0)
   add r4.yz, r4.yyzy, r6.xxyx
 
-#line 4
+#line 8
   mul r4.y, r4.z, r4.y
   itof r6.x, l(0)
   mov r6.y, l(1.571000)
   add r4.yz, r4.yyyy, r6.xxyx
   sincos r4.yz, null, r4.yyzy  // r4.y <- <g return value>.x; r4.z <- <g return value>.y
 
-#line 13
+#line 17
   dp2 r4.y, r3.xyxx, r4.yzyy
   mul r4.x, r4.y, r4.x
   sincos r4.x, null, r4.x
@@ -774,33 +774,33 @@ loop
   mul r4.x, r4.x, r5.y
   add r4.x, r4.x, r4.w  // r4.x <- <noise return value>
 
-#line 25
+#line 29
   mov r4.x, r4.x  // r4.x <- n
 
-#line 26
+#line 30
   mul r4.x, r2.w, r4.x
   add r3.z, r3.z, r4.x
 
-#line 27
+#line 31
   mul r2.w, r2.w, l(0.500000)
 
-#line 28
+#line 32
   mul r4.xy, r3.xxxx, cb0[0].xyxx
   mul r4.zw, r3.yyyy, cb0[1].xxxy
   add r3.xy, r4.zwzz, r4.xyxx
 
-#line 29
+#line 33
   iadd r3.w, r3.w, l(1)
 endloop 
 
-#line 31
+#line 35
 mul r0.x, r3.z, l(0.500000)
 add r0.x, r0.x, l(0.500000)  // r0.x <- <fbm4 return value>
 
-#line 59
+#line 63
 mov r0.x, r0.x  // r0.x <- n2
 
-#line 60
+#line 64
 mov r0.y, l(-0.200000)
 add r0.z, r0.y, l(0.900000)
 add r0.x, r0.y, r0.x
@@ -817,14 +817,14 @@ add r0.yzw, r0.yyzw, r2.xxyz
 mul r0.xyz, r0.yzwy, r0.xxxx
 add r0.xyz, r0.xyzx, r1.xyzx  // r0.x <- col.x; r0.y <- col.y; r0.z <- col.z
 
-#line 61
+#line 65
 min r0.xyz, r0.xyzx, l(1.000000, 1.000000, 1.000000, 0.000000)
 
-#line 65
+#line 69
 mov r0.xyz, r0.xyzx  // r0.x <- pin.color.x; r0.y <- pin.color.y; r0.z <- pin.color.z
 mov r0.w, l(1.000000)  // r0.w <- pin.color.w
 
-#line 67
+#line 71
 mov o0.xyzw, r0.xyzw
 ret 
 // Approximately 514 instruction slots used

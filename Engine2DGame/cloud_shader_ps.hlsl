@@ -1,5 +1,6 @@
-#include "cloud_shader.hlsli"
+#pragma target 5.0
 
+#include "cloud_shader.hlsli"
 
 //
 // https://www.shadertoy.com/view/tlB3zK
