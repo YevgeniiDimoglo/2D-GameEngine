@@ -13,8 +13,8 @@ float4 main(VS_OUT pin) : SV_TARGET
 
 	float mask_value = mask_texture.Sample(color_sampler_state, pin.texcoord + scroll_directionY * parameters.x);
 	float mask_value2 = mask_texture2.Sample(color_sampler_state, pin.texcoord + scroll_directionY * parameters.x);
-	float mask_value3 = mask_texture3.Sample(color_sampler_state, pin.texcoord);
-	float mask_value4 = mask_texture4.Sample(color_sampler_state, pin.texcoord);
+	float mask_value3 = mask_texture3.Sample(color_sampler_state, pin.texcoord * 0.65 + scroll_directionX * 0.35 + scroll_directionY * 0.25);
+	float mask_value4 = mask_texture4.Sample(color_sampler_state, pin.texcoord * 0.7 + scroll_directionX * 0.5 + scroll_directionY * 0.3);
 
 	float mask_result = mask_value * mask_value2 * mask_value3 + mask_value4;
 
@@ -25,29 +25,29 @@ float4 main(VS_OUT pin) : SV_TARGET
 	// red flame
 
 	
-	//color.r *= red + yellow + orange;
-	//color.g *= yellow + orange * 0.6;
-	//color.b *= 0;
+	color.r *= red + yellow + orange;
+	color.g *= yellow + orange * 0.6;
+	color.b *= 0;
 
 
-	//if (color.r == 0)
-	//{
-	//	color.a = 0;
-	//}
+	if (color.r == 0)
+	{
+		color.a = 0;
+	}
 	
 
 
 	// blue flame
 
-	color.r *= yellow + orange * 1;
-	color.g *= yellow;
-	color.b *= yellow + orange * 1 + red * 1;
+	//color.r *= yellow + orange * 1;
+	//color.g *= yellow;
+	//color.b *= yellow + orange * 1 + red * 1;
 
 
-	if (color.b == 0)
-	{	
-		color.a = 0;
-	}
+	//if (color.b == 0)
+	//{	
+	//	color.a = 0;
+	//}
 
 	return color;
 }

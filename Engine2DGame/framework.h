@@ -15,6 +15,8 @@
 #include "FlameFont.h"
 #include "dissolve.h"
 #include "Player.h"
+#include "Cloud.h"
+#include "Enemy.h"
 
 #ifdef USE_IMGUI
 #include "imgui/imgui.h"
@@ -53,12 +55,15 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> sprite_pixel_shader;
 
 	std::shared_ptr<sprite> background_sprite;
+	std::shared_ptr<sprite> cloud_sprite;
 	std::unique_ptr<sprite> font_sprite;
 	std::unique_ptr<sprite> font_sprite_d;
 
 	FlameFont ff;
 	DissolveShader ds;
 	Player pl;
+	CloudShader cl;
+	Enemy en;
 
 	float timer;
 

@@ -153,7 +153,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Cloud.cpp" />
     <ClCompile Include="dissolve.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="FlameFont.cpp" />
     <ClCompile Include="framework.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -169,7 +171,9 @@
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Cloud.h" />
     <ClInclude Include="dissolve.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="FlameFont.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="high_resolution_timer.h" />
@@ -188,11 +192,24 @@
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cloud_shader.hlsli" />
     <None Include="dissolve_shader.hlsli" />
     <None Include="flameFont.hlsli" />
     <None Include="sprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="cloud_shader_ps.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="cloud_shader_vs.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="dissolve_shader_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

@@ -156,6 +156,7 @@ bool framework::initialize()
 	}
 
 	background_sprite = std::make_shared<sprite>(device.Get(), L".\\resources\\background.png");
+	cloud_sprite = std::make_shared<sprite>(device.Get(), L".\\resources\\background.png");
 
 	font_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font4.png");
 	font_sprite_d = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font_orig.png");
@@ -163,6 +164,9 @@ bool framework::initialize()
 	ff.init(device.Get());
 	ds.init(device.Get(), background_sprite);
 	pl.init(device.Get());
+	cl.init(device.Get(), cloud_sprite);
+	en.init(device.Get());
+
 
 	return true;
 }
@@ -178,7 +182,7 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 
 #ifdef USE_IMGUI
 	ImGui::Begin("ImGUI");
-	ImGui::SliderFloat("TIMER", &timer, 0.0f, +15.0f);
+	ImGui::SliderFloat("TIMER", &timer, 0.0f, +3600.0f);
 
 	ImGui::End();
 #endif
@@ -199,7 +203,7 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 	}
 	if (GetAsyncKeyState(0x53) < 0)
 	{
-		pl.update({ -5 * sinf(pl.getAngle() * PI / 180.0f), -5 * -cosf(pl.getAngle() * PI / 180.0f) }, 0);
+		pl.update({ -3 * sinf(pl.getAngle() * PI / 180.0f), -3 * -cosf(pl.getAngle() * PI / 180.0f) }, 0);
 		pl.setAct(2);
 	}
 
@@ -213,10 +217,16 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 		pl.update({0, 0}, 3);
 	}
 
+	en.update({ 0, 0 }, 1);
 
-	if (timer >= 10)
+	if (timer >= 3600)
 	{
-		timer = 9.9f;
+		timer = 15.0f;
+	}
+
+	if (timer >= 4 && timer <= 4.5)
+	{
+		timer = 0;
 	}
 
 }
@@ -246,7 +256,14 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 	}
 	else
 	{
+		cl.render(device.Get(), immediate_context.Get(), timer);
 		ds.render(device.Get(), immediate_context.Get(), timer);
+
+		if (timer > 6)
+		{
+			pl.render(device.Get(), immediate_context.Get(), timer);
+			en.render(device.Get(), immediate_context.Get(), timer);
+		}
 	}
 
 	if (font_sprite)
@@ -260,22 +277,17 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 
 		if (((int)(timer * 3)) % 2 == 0 && timer < 4.6)
 		{
-			font_sprite_d->textout2(immediate_context.Get(), "JOIN", 300, 400, 150, 120, 1.0f, 0.0f, 0.0f, 1.0f);
+			font_sprite_d->textout2(immediate_context.Get(), "START", 300, 400, 150, 120, 1.0f, 0.0f, 0.0f, 1.0f);
 		}
 		
 	}
-
-	pl.render(device.Get(), immediate_context.Get(), timer);
 
 	if (timer <= 9.5)
 	{
 		ff.render(device.Get(), immediate_context.Get(), timer);
 	}
+
 	
-	if (timer >= 4 && timer <= 4.5)
-	{
-		timer = 0;
-	}
 	
 
 #ifdef USE_IMGUI
