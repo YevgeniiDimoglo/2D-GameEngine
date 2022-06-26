@@ -9,6 +9,9 @@ void Enemy::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 {
 	ep.pos = { 100, 200 };
 	ep.angle = -180;
+	ep.hp = 10;
+	ep.radius = 32;
+	ep.act = 1;
 
 	spriteEnemy = std::make_unique<sprite>(device.Get(), L".\\resources\\enemy\\enemy.png");
 
@@ -58,6 +61,12 @@ void Enemy::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 
 void Enemy::update(DirectX::XMFLOAT2 pos, float angle)
 {
+	if (ep.hp <= 0)
+	{
+		ep = {};
+		ep.act = 0;
+	}
+
 	ep.pos.x += pos.x;
 	ep.pos.y += pos.y;
 	ep.angle += angle;
@@ -65,6 +74,7 @@ void Enemy::update(DirectX::XMFLOAT2 pos, float angle)
 
 void Enemy::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time)
 {
+	if (ep.act == 0) return;
 
 	{
 		immediate_context->IASetInputLayout(sprite_input_layout_enemy.Get());

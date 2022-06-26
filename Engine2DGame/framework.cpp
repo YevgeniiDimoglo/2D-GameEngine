@@ -157,6 +157,7 @@ bool framework::initialize()
 
 	background_sprite = std::make_shared<sprite>(device.Get(), L".\\resources\\background.png");
 	cloud_sprite = std::make_shared<sprite>(device.Get(), L".\\resources\\background.png");
+	foreground_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\boss_attack.png");
 
 	font_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font4.png");
 	font_sprite_d = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font_orig.png");
@@ -172,6 +173,13 @@ bool framework::initialize()
 		p->init(device.Get());
 	}
 
+	for (auto p = listOfEnemies.begin(); p != listOfEnemies.end(); ++p)
+	{
+		p->init(device.Get());
+		auto index = std::distance(listOfEnemies.begin(), p);
+		p->setState(index);
+		p->update({ float(p->getState() * 64), float(p->getState() * 0)}, pl.getAngle());
+	}
 
 	return true;
 }
@@ -232,14 +240,8 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 			Shot* shot = pl.searchSet(listOfShots);
 			shot->setAct(0);
 
-			if (shot->getState() % 2 == 0)
-			{
-				shot->update(pl.getPos(), pl.getAngle());
-			}
-			else
-			{
-				shot->update({ pl.getPos().x + 40, pl.getPos().y }, pl.getAngle());
-			}
+			shot->update(pl.getPos(), pl.getAngle());
+
 		}
 
 	}
@@ -256,7 +258,10 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 		}
 	}
 
-	en.update({ 0, 0 }, 1);
+	for (auto p = listOfEnemies.begin(); p != listOfEnemies.end(); ++p)
+	{
+		p->update({0, 0}, 0);
+	}
 
 	if (timer - oldTimer > 0.1f)
 	{
@@ -273,6 +278,7 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 		timer = 0;
 	}
 
+	judge(listOfShots, listOfEnemies);
 }
 void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 {
@@ -307,12 +313,18 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 		{
 			pl.render(device.Get(), immediate_context.Get(), timer);
 			en.render(device.Get(), immediate_context.Get(), timer);
+
 			for (auto p = listOfShots.begin(); p != listOfShots.end(); ++p)
 			{
 				if (p->getAct() != 10)
 				{
 					p->render(device.Get(), immediate_context.Get(), timer);
 				}
+			}
+
+			for (auto p = listOfEnemies.begin(); p != listOfEnemies.end(); ++p)
+			{
+				p->render(device.Get(), immediate_context.Get(), timer);
 			}
 		}
 	}
@@ -338,8 +350,7 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 		ff.render(device.Get(), immediate_context.Get(), timer);
 	}
 
-	
-	
+	foreground_sprite->render(immediate_context.Get(), { 300, 300 }, { timer * 20, timer * 20}, { 0, 0 }, { 32, 32 }, { 16, 16 }, 0, {1.0f, 1.0f, 1.0f, 1.0f});
 
 #ifdef USE_IMGUI
 	ImGui::Render();

@@ -20,6 +20,7 @@
 #include "Cloud.h"
 #include "Enemy.h"
 #include "Shot.h"
+#include "Judge.h"
 
 #ifdef USE_IMGUI
 #include "imgui/imgui.h"
@@ -62,6 +63,7 @@ public:
 	std::shared_ptr<sprite> cloud_sprite;
 	std::unique_ptr<sprite> font_sprite;
 	std::unique_ptr<sprite> font_sprite_d;
+	std::unique_ptr<sprite> foreground_sprite;
 
 	FlameFont ff;
 	DissolveShader ds;
@@ -69,6 +71,7 @@ public:
 	CloudShader cl;
 	Enemy en;
 	std::vector<Shot> listOfShots{512};
+	std::vector<Enemy> listOfEnemies{100};
 
 	float timer;
 	float oldTimer;

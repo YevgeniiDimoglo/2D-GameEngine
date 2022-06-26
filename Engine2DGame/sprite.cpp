@@ -34,6 +34,57 @@ sprite::sprite(ID3D11Device* device, const wchar_t* filename)
 	hr = device->CreateBuffer(&buffer_desc, &subresource_data, vertex_buffer.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
+	{
+		D3D11_INPUT_ELEMENT_DESC input_element_desc[]
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		};
+		create_vs_from_cso(device,
+			"sprite_vs.cso",
+			vertexShader.GetAddressOf(),
+			inputLayout.GetAddressOf(),
+			input_element_desc,
+			ARRAYSIZE(input_element_desc));
+		create_ps_from_cso(device,
+			"sprite_ps.cso",
+			pixelShader.GetAddressOf());
+	}
+
+	D3D11_RASTERIZER_DESC rsDesc = {};
+	rsDesc.FillMode = D3D11_FILL_SOLID;//
+	rsDesc.CullMode = D3D11_CULL_NONE;//	カリング
+	rsDesc.FrontCounterClockwise = false;
+	rsDesc.DepthBias = 0;
+	rsDesc.DepthBiasClamp = 0;
+	rsDesc.SlopeScaledDepthBias = 0;
+	rsDesc.DepthClipEnable = false;
+	rsDesc.ScissorEnable = false;
+	rsDesc.MultisampleEnable = false;
+	rsDesc.AntialiasedLineEnable = false;
+	if (FAILED(device->CreateRasterizerState(&rsDesc, &rasterizerState)))
+	{
+		assert(!"ラスタライザステートの作成に失敗(Primitive)");
+		return;
+	}
+
+	D3D11_SAMPLER_DESC sampler_desc{};
+	sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampler_desc.MipLODBias = 0;
+	sampler_desc.MaxAnisotropy = 16;
+	sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	sampler_desc.BorderColor[0] = 0;
+	sampler_desc.BorderColor[1] = 0;
+	sampler_desc.BorderColor[2] = 0;
+	sampler_desc.BorderColor[3] = 0;
+	sampler_desc.MinLOD = 0;
+	sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
+	hr = device->CreateSamplerState(&sampler_desc, samplerState.GetAddressOf());
+
 	load_texture_from_file(device, filename, shader_resource_view.GetAddressOf(), &texture2d_desc);
 }
 void sprite::render(ID3D11DeviceContext* immediate_context,
@@ -146,9 +197,170 @@ void sprite::render(ID3D11DeviceContext* immediate_context, float dx, float dy, 
 		0.0f, 0.0f, static_cast<float>(texture2d_desc.Width), static_cast<float>(texture2d_desc.Height));
 }
 
-sprite::~sprite()
+void sprite::render(ID3D11DeviceContext* immediate_context,
+	const DirectX::XMFLOAT2& position, const DirectX::XMFLOAT2& scale,
+	const DirectX::XMFLOAT2& texPos, const DirectX::XMFLOAT2& texSize,
+	const DirectX::XMFLOAT2& center, float angle,
+	const DirectX::XMFLOAT4& color) const
 {
+	if (scale.x == 0.0f || scale.y == 0.0f) return;
+
+	D3D11_VIEWPORT viewport;
+	UINT numViewports = 1;
+	immediate_context->RSGetViewports(&numViewports, &viewport);
+
+	float tw = texSize.x;
+	float th = texSize.y;
+	if (tw == FLT_MIN && th == FLT_MIN)
+	{
+		tw = static_cast<float>(texture2d_desc.Width);
+		th = static_cast<float>(texture2d_desc.Height);
+	}
+
+	vertex vertices[4] = {};
+#ifdef GAMELIB_PLUS_UP
+	vertices[0] = { VECTOR3(0.0f, 1.0f, 0), color, VECTOR2(0, 0) };
+	vertices[1] = { VECTOR3(1.0f, 1.0f, 0), color, VECTOR2(1, 0) };
+	vertices[2] = { VECTOR3(0.0f, 0.0f, 0), color, VECTOR2(0, 1) };
+	vertices[3] = { VECTOR3(1.0f, 0.0f, 0), color, VECTOR2(1, 1) };
+#else
+	vertices[0] = { DirectX::XMFLOAT3(0.0f, 0.0f, 0), color, DirectX::XMFLOAT2(0, 0) };
+	vertices[1] = { DirectX::XMFLOAT3(1.0f, 0.0f, 0), color, DirectX::XMFLOAT2(1, 0) };
+	vertices[2] = { DirectX::XMFLOAT3(0.0f, 1.0f, 0), color, DirectX::XMFLOAT2(0, 1) };
+	vertices[3] = { DirectX::XMFLOAT3(1.0f, 1.0f, 0), color, DirectX::XMFLOAT2(1, 1) };
+#endif
+
+	float sinValue = sinf(angle);
+	float cosValue = cosf(angle);
+	float mx = (tw * scale.x) / tw * center.x;
+	float my = (th * scale.y) / th * center.y;
+	for (int i = 0; i < 4; i++)
+	{
+		vertices[i].position.x *= (tw * scale.x);
+		vertices[i].position.y *= (th * scale.y);
+
+		vertices[i].position.x -= mx;
+		vertices[i].position.y -= my;
+
+		float rx = vertices[i].position.x;
+		float ry = vertices[i].position.y;
+		vertices[i].position.x = rx * cosValue - ry * sinValue;
+		vertices[i].position.y = rx * sinValue + ry * cosValue;
+
+		vertices[i].position.x += mx;
+		vertices[i].position.y += my;
+
+		vertices[i].position.x += (position.x - scale.x * center.x);
+		vertices[i].position.y += (position.y - scale.y * center.y);
+
+		vertices[i].position.x = -1.0f + vertices[i].position.x * 2 / viewport.Width;
+		vertices[i].position.y = 1.0f - vertices[i].position.y * 2 / viewport.Height;
+#ifdef GAMELIB_PLUS_UP
+		vertices[i].position.y = -vertices[i].position.y;
+#endif
+
+		// UV座標の調整
+		vertices[i].texcoord.x = (std::min)(vertices[i].texcoord.x, 1.0f);
+		vertices[i].texcoord.y = (std::min)(vertices[i].texcoord.y, 1.0f);
+
+		vertices[i].texcoord.x = (texPos.x + vertices[i].texcoord.x * tw) / texture2d_desc.Width;
+		vertices[i].texcoord.y = (texPos.y + vertices[i].texcoord.y * th) / texture2d_desc.Height;
+	}
+
+	D3D11_MAPPED_SUBRESOURCE msr;
+	immediate_context->Map(vertex_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	memcpy(msr.pData, vertices, sizeof(vertices));
+	immediate_context->Unmap(vertex_buffer.Get(), 0);
+
+	UINT stride = sizeof(vertex);
+	UINT offset = 0;
+	immediate_context->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
+	immediate_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	immediate_context->IASetInputLayout(inputLayout.Get());
+	immediate_context->RSSetState(rasterizerState.Get());
+	immediate_context->VSSetShader(vertexShader.Get(), nullptr, 0);
+	immediate_context->PSSetShader(pixelShader.Get(), nullptr, 0);
+
+	immediate_context->PSSetShaderResources(0, 1, shader_resource_view.GetAddressOf());
+	immediate_context->PSSetSamplers(0, 1, samplerState.GetAddressOf());
+
+	//context->OMSetDepthStencilState(depthStencilState, 1);
+
+	immediate_context->Draw(4, 0);
 }
+
+void sprite::circle(ID3D11DeviceContext* immediate_context,
+	const DirectX::XMFLOAT2& center, float radius,
+	const DirectX::XMFLOAT2& scale, float angle,
+	const DirectX::XMFLOAT4& color, int n
+)
+{
+	if (n < 3 || radius <= 0.0f) return;
+	if (n > 64) n = 64;//最大64角形
+
+	D3D11_VIEWPORT viewport;
+	UINT numViewports = 1;
+	immediate_context->RSGetViewports(&numViewports, &viewport);
+
+	vertex vertices[130] = { DirectX::XMFLOAT3(0,0,0) };
+	float arc = DirectX::XM_PI * 2 / n;
+	vertex* p = &vertices[0];
+
+	float sinValue = sinf(angle);
+	float cosValue = cosf(angle);
+	for (int i = 0; i <= n; i++)
+	{
+		float rx, ry;
+#ifdef GAMELIB_PLUS_UP
+		rx = cosf(arc * i) * radius * scale.x;
+		ry = sinf(arc * i) * radius * scale.y;
+#else
+		rx = cosf(arc * -i) * radius * scale.x;
+		ry = sinf(arc * -i) * radius * scale.y;
+#endif
+		p->position.x = center.x + rx * cosValue - ry * sinValue;
+		p->position.y = center.y + rx * sinValue + ry * cosValue;
+
+		p->position.x = -1.0f + p->position.x * 2 / viewport.Width;
+#ifdef GAMELIB_PLUS_UP
+		p->position.y = -1.0f + p->position.y * 2 / viewport.Height;
+#else
+		p->position.y = 1.0f - p->position.y * 2 / viewport.Height;
+#endif
+		p->color = color;
+		p++;
+
+		p->position.x = center.x;
+		p->position.y = center.y;
+
+		p->position.x = -1.0f + p->position.x * 2 / viewport.Width;
+#ifdef GAMELIB_PLUS_UP
+		p->position.y = -1.0f + p->position.y * 2 / viewport.Height;
+#else
+		p->position.y = 1.0f - p->position.y * 2 / viewport.Height;
+#endif
+		p->color = color;
+		p++;
+	}
+
+	D3D11_MAPPED_SUBRESOURCE msr;
+	immediate_context->Map(vertex_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	memcpy(msr.pData, vertices, sizeof(vertex) * (n + 1) * 2);
+	immediate_context->Unmap(vertex_buffer.Get(), 0);
+
+	UINT stride = sizeof(vertex);
+	UINT offset = 0;
+	immediate_context->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
+	immediate_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	immediate_context->IASetInputLayout(inputLayout.Get());
+	immediate_context->RSSetState(rasterizerState.Get());
+	immediate_context->VSSetShader(vertexShader.Get(), NULL, 0);
+	immediate_context->PSSetShader(pixelShader.Get(), NULL, 0);
+	//context->OMSetDepthStencilState(depthStencilState, 1);
+
+	immediate_context->Draw((n + 1) * 2 - 1, 0);
+}
+
 
 void sprite::textout(ID3D11DeviceContext* immediate_context, std::string s, float x, float y, float w, float h, float r, float g, float b, float a)
 {
@@ -174,4 +386,9 @@ void sprite::textout2(ID3D11DeviceContext* immediate_context, std::string s, flo
 		render(immediate_context, x + carriage, y, w, h, r, g, b, a, 0, sw * (c - 65), 0, sw, sh);
 		carriage += w;
 	}
+}
+
+
+sprite::~sprite()
+{
 }

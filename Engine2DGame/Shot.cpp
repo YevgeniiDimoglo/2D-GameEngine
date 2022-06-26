@@ -11,6 +11,7 @@ void Shot::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 	sp.pos = { 200, 200 };
 	sp.angle = 0;
 	sp.act = 10;
+	sp.radius = 8;
 
 	spriteShot = std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\rocket.png");
 
@@ -60,9 +61,19 @@ void Shot::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 
 void Shot::update(DirectX::XMFLOAT2 pos, float angle)
 {
+	float tempX1 = 0;
+	float tempY1 = 0;
 
-	float tempX1 = cosf(angle * 3.14 / 180) * (pos.x + 35 - (pos.x + 64)) - sinf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.x + 64;
-	float tempY1 = sinf(angle * 3.14 / 180) * (pos.x + 35 - (pos.x + 64)) + cosf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.y + 64;
+	if(sp.state % 2 == 0)
+	{
+		tempX1 = cosf(angle * 3.14 / 180) * (pos.x + 35 - (pos.x + 64)) - sinf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.x + 64;
+		tempY1 = sinf(angle * 3.14 / 180) * (pos.x + 35 - (pos.x + 64)) + cosf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.y + 64;
+	}
+	else
+	{
+		tempX1 = cosf(angle * 3.14 / 180) * (pos.x + 92 - (pos.x + 64)) - sinf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.x + 64;
+		tempY1 = sinf(angle * 3.14 / 180) * (pos.x + 92 - (pos.x + 64)) + cosf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.y + 64;
+	}
 
 	switch (sp.act)
 	{
@@ -93,7 +104,7 @@ void Shot::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::C
 
 		immediate_context->PSSetSamplers(0, 1, sampler_state_shot.GetAddressOf());
 
-		spriteShot->render(immediate_context.Get(), sp.pos.x, sp.pos.y, 16, 16, 1.0f, 1.0f, 1.0f, 1.0f, sp.angle);
+		spriteShot->render(immediate_context.Get(), sp.pos.x - 8, sp.pos.y - 8, 16, 16, 1.0f, 1.0f, 1.0f, 1.0f, sp.angle);
 
 	}
 

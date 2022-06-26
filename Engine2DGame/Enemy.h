@@ -20,7 +20,12 @@ public:
 
 	DirectX::XMFLOAT2 getPos() { return ep.pos; }
 	float getAngle() { return ep.angle; }
+	int getAct() { return ep.act; }
+	int getState() { return ep.state; }
+	int getHP() { return ep.hp; }
 	void setAct(int act) { this->ep.act = act; }
+	void setState(int state) { this->ep.state = state; }
+	void setHP(int HP) { this->ep.hp = HP; }
 
 private:
 
