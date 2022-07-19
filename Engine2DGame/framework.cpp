@@ -162,11 +162,11 @@ bool framework::initialize()
 	font_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font4.png");
 	font_sprite_d = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font_orig.png");
 
-	ff.init(device.Get());
-	ds.init(device.Get(), background_sprite);
-	pl.init(device.Get());
-	cl.init(device.Get(), cloud_sprite);
-	en.init(device.Get());
+	flameFont.init(device.Get());
+	dissolveShader.init(device.Get(), background_sprite);
+	player.init(device.Get());
+	cloudShader.init(device.Get(), cloud_sprite);
+	enemy.init(device.Get());
 
 	for (auto p = listOfShots.begin(); p!= listOfShots.end(); ++p)
 	{
@@ -178,7 +178,7 @@ bool framework::initialize()
 		p->init(device.Get());
 		auto index = std::distance(listOfEnemies.begin(), p);
 		p->setState(index);
-		p->update({ float(p->getState() * 64), float(p->getState() * 0)}, pl.getAngle());
+		p->update({ float(p->getState() * 64), float(p->getState() * 0)}, player.getAngle());
 	}
 
 	return true;
@@ -200,34 +200,29 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 	ImGui::End();
 #endif
 
-	timer += elapsed_time * 0.5f;
+	timer += elapsed_time;
 
-	if (GetAsyncKeyState(VK_RETURN) < 0)
-	{
-		timer = 4.8f;
-	}
-
-	pl.setAct(0);
+	player.setAct(0);
 
 	if (GetAsyncKeyState(0x57) < 0)
 	{
-		pl.update({ 5 * sinf(pl.getAngle() * PI / 180.0f), 5 * -cosf(pl.getAngle() * PI / 180.0f) }, 0);
-		pl.setAct(1);
+		player.update({ 5 * sinf(player.getAngle() * PI / 180.0f), 5 * -cosf(player.getAngle() * PI / 180.0f) }, 0);
+		player.setAct(1);
 	}
 	if (GetAsyncKeyState(0x53) < 0)
 	{
-		pl.update({ -3 * sinf(pl.getAngle() * PI / 180.0f), -3 * -cosf(pl.getAngle() * PI / 180.0f) }, 0);
-		pl.setAct(2);
+		player.update({ -3 * sinf(player.getAngle() * PI / 180.0f), -3 * -cosf(player.getAngle() * PI / 180.0f) }, 0);
+		player.setAct(2);
 	}
 
 	if (GetAsyncKeyState(0x41) < 0)
 	{
-		pl.update({ 0, 0 }, -3);
+		player.update({ 0, 0 }, -3);
 	}
 
 	if (GetAsyncKeyState(0x44) < 0)
 	{
-		pl.update({0, 0}, 3);
+		player.update({0, 0}, 3);
 	}
 
 	if (GetAsyncKeyState(0x20) < 0)
@@ -237,10 +232,10 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 			checkKey = true;
 			oldTimer = timer;
 
-			Shot* shot = pl.searchSet(listOfShots);
+			Shot* shot = player.searchSet(listOfShots);
 			shot->setAct(0);
 
-			shot->update(pl.getPos(), pl.getAngle());
+			shot->update(player.getPos(), player.getAngle());
 
 		}
 
@@ -254,7 +249,7 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 		}
 		if (p->getAct() != 10)
 		{
-			p->update(pl.getPos(), pl.getAngle());
+			p->update(player.getPos(), player.getAngle());
 		}
 	}
 
@@ -273,14 +268,24 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 		timer = 15.0f;
 	}
 
-	if (timer >= 4 && timer <= 4.5)
+	if (GetAsyncKeyState(VK_RETURN) < 0)
 	{
-		timer = 0;
+		sceneNumber = 1;
+	}
+
+	if (GetAsyncKeyState(0x31) < 0)
+	{
+		sceneNumber = 0;
+	}
+
+	if (GetAsyncKeyState(0x32) < 0)
+	{
+		sceneNumber = 1;
 	}
 
 	judge(listOfShots, listOfEnemies);
 }
-void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
+void framework::renderSceneOne(float elapsed_time/*Elapsed seconds from last frame*/)
 {
 
 	FLOAT color[]{ 0.2f, 0.2f, 0.2f, 1.0f };
@@ -300,34 +305,8 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 	immediate_context->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
 	immediate_context->RSSetState(rasterizer_state.Get());
 
-	if (timer <= 5)
-	{
-		background_sprite->render(immediate_context.Get(), 0, 0, 1280, 720);
-	}
-	else
-	{
-		cl.render(device.Get(), immediate_context.Get(), timer);
-		ds.render(device.Get(), immediate_context.Get(), timer);
+	background_sprite->render(immediate_context.Get(), 0, 0, 1280, 720);
 
-		if (timer > 6)
-		{
-			pl.render(device.Get(), immediate_context.Get(), timer);
-			en.render(device.Get(), immediate_context.Get(), timer);
-
-			for (auto p = listOfShots.begin(); p != listOfShots.end(); ++p)
-			{
-				if (p->getAct() != 10)
-				{
-					p->render(device.Get(), immediate_context.Get(), timer);
-				}
-			}
-
-			for (auto p = listOfEnemies.begin(); p != listOfEnemies.end(); ++p)
-			{
-				p->render(device.Get(), immediate_context.Get(), timer);
-			}
-		}
-	}
 
 	if (font_sprite)
 	{
@@ -338,25 +317,66 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 
 		font_sprite->textout(immediate_context.Get(), "Development", 0, 0, 50, 40, 1.0f, 0.0f, 1.0f, 1.0f);
 
-		if (((int)(timer * 3)) % 2 == 0 && timer < 4.6)
+		if (((int)(timer)) % 2 == 0)
 		{
 			font_sprite_d->textout2(immediate_context.Get(), "START", 300, 400, 150, 120, 1.0f, 0.0f, 0.0f, 1.0f);
 		}
 		
 	}
 
-	if (timer <= 9.5)
-	{
-		ff.render(device.Get(), immediate_context.Get(), timer);
-	}
-
-	foreground_sprite->render(immediate_context.Get(), { 300, 300 }, { timer * 20, timer * 20}, { 0, 0 }, { 32, 32 }, { 16, 16 }, 0, {1.0f, 1.0f, 1.0f, 1.0f});
+	flameFont.render(device.Get(), immediate_context.Get(), timer);
 
 #ifdef USE_IMGUI
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 #endif
  
+	UINT sync_interval{ 1 };
+	swap_chain->Present(sync_interval, 0);
+
+}
+
+void framework::renderSceneTwo(float elapsed_time/*Elapsed seconds from last frame*/)
+{
+
+	D3D11_VIEWPORT viewport{};
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.Width = static_cast<float>(SCREEN_WIDTH);
+	viewport.Height = static_cast<float>(SCREEN_HEIGHT);
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
+	immediate_context->RSSetViewports(1, &viewport);
+	immediate_context->OMSetBlendState(blend_state.Get(), nullptr, 0xFFFFFFFF);
+	immediate_context->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
+	immediate_context->RSSetState(rasterizer_state.Get());
+
+	cloudShader.render(device.Get(), immediate_context.Get(), timer);
+
+	player.render(device.Get(), immediate_context.Get(), timer);
+	enemy.render(device.Get(), immediate_context.Get(), timer);
+
+	for (auto p = listOfShots.begin(); p != listOfShots.end(); ++p)
+	{
+		if (p->getAct() != 10)
+		{
+			p->render(device.Get(), immediate_context.Get(), timer);
+		}
+	}
+
+	for (auto p = listOfEnemies.begin(); p != listOfEnemies.end(); ++p)
+	{
+		p->render(device.Get(), immediate_context.Get(), timer);
+	}
+
+	dissolveShader.render(device.Get(), immediate_context.Get(), timer);
+
+
+#ifdef USE_IMGUI
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+#endif
+
 	UINT sync_interval{ 1 };
 	swap_chain->Present(sync_interval, 0);
 

@@ -65,17 +65,19 @@ public:
 	std::unique_ptr<sprite> font_sprite_d;
 	std::unique_ptr<sprite> foreground_sprite;
 
-	FlameFont ff;
-	DissolveShader ds;
-	Player pl;
-	CloudShader cl;
-	Enemy en;
+	FlameFont flameFont;
+	DissolveShader dissolveShader;
+	CloudShader cloudShader;
+	Player player;
+	Enemy enemy;
+
 	std::vector<Shot> listOfShots{512};
 	std::vector<Enemy> listOfEnemies{100};
 
 	float timer;
 	float oldTimer;
 	bool checkKey = false;
+	int sceneNumber = 0;
 
 	framework(HWND hwnd);
 	~framework();
@@ -115,8 +117,17 @@ public:
 				tictoc.tick();
 				calculate_frame_stats();
 				update(tictoc.time_interval());
-				render(tictoc.time_interval());
-
+				switch (sceneNumber)
+				{
+				case 0:
+					renderSceneOne(tictoc.time_interval());
+					break;
+				case 1:
+					renderSceneTwo(tictoc.time_interval());
+					break;
+				default:
+					break;
+				}
 			}
 		}
 
@@ -180,7 +191,8 @@ public:
 private:
 	bool initialize();
 	void update(float elapsed_time/*Elapsed seconds from last frame*/);
-	void render(float elapsed_time/*Elapsed seconds from last frame*/);
+	void renderSceneOne(float elapsed_time/*Elapsed seconds from last frame*/);
+	void renderSceneTwo(float elapsed_time/*Elapsed seconds from last frame*/);
 	bool uninitialize();
 
 private:

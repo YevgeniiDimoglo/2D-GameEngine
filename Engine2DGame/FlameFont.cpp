@@ -111,14 +111,13 @@ void FlameFont::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::W
 		immediate_context->PSSetConstantBuffers(1, 1, scroll_constant_buffer.GetAddressOf());
 
 		timer_constants timer{};
-		timer.parameters.x = elapsed_time * 1.2;
+		timer.parameters.x = elapsed_time;
 		immediate_context->UpdateSubresource(timer_constant_buffer.Get(), 0, 0, &timer, 0, 0);
 		immediate_context->VSSetConstantBuffers(2, 1, timer_constant_buffer.GetAddressOf());
 		immediate_context->PSSetConstantBuffers(2, 1, timer_constant_buffer.GetAddressOf());
 	}
 
-	if (elapsed_time > 0 && elapsed_time < 4.8)
-	{
+	
 		immediate_context->IASetInputLayout(sprite_input_layout_flame.Get());
 		immediate_context->VSSetShader(sprite_vertex_shader_flame.Get(), nullptr, 0);
 		immediate_context->PSSetShader(sprite_pixel_shader_flame.Get(), nullptr, 0);
@@ -135,12 +134,9 @@ void FlameFont::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::W
 		letter_backC->render(immediate_context.Get(), 512 - 128, 128, 256, 256);
 		letter_backE->render(immediate_context.Get(), 768 - 128, 128, 256, 256);
 		letter_backS->render(immediate_context.Get(), 1024 - 128, 128, 256, 256);
+
 		//pureFlame->render(immediate_context.Get(), 700, 500, 256, 256);
-	}
 
-
-	if (elapsed_time < 5)
-	{
 		immediate_context->IASetInputLayout(sprite_input_layout_flamefront.Get());
 		immediate_context->VSSetShader(sprite_vertex_shader_flamefront.Get(), nullptr, 0);
 		immediate_context->PSSetShader(sprite_pixel_shader_flamefront.Get(), nullptr, 0);
@@ -151,7 +147,6 @@ void FlameFont::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::W
 		letter_frontC->render(immediate_context.Get(), 512 - 128, 128, 256, 256);
 		letter_frontE->render(immediate_context.Get(), 768 - 128, 128, 256, 256);
 		letter_frontS->render(immediate_context.Get(), 1024 - 128, 128, 256, 256);
-	}
 
 }
 
