@@ -369,7 +369,7 @@ void framework::renderSceneTwo(float elapsed_time/*Elapsed seconds from last fra
 		p->render(device.Get(), immediate_context.Get(), timer);
 	}
 
-	dissolveShader.render(device.Get(), immediate_context.Get(), timer);
+	dissolveShader.render(device.Get(), immediate_context.Get());
 
 
 #ifdef USE_IMGUI

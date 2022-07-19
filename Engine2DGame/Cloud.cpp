@@ -96,15 +96,14 @@ void CloudShader::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft:
 	immediate_context->VSSetConstantBuffers(3, 1, size_constant_buffer.GetAddressOf());
 	immediate_context->PSSetConstantBuffers(3, 1, size_constant_buffer.GetAddressOf());
 
-	if (elapsed_time > 5)
-	{
-		immediate_context->IASetInputLayout(sprite_input_layout_cloud.Get());
-		immediate_context->VSSetShader(sprite_vertex_shader_cloud.Get(), nullptr, 0);
-		immediate_context->PSSetShader(sprite_pixel_shader_cloud.Get(), nullptr, 0);
-		immediate_context->PSSetSamplers(0, 1, sampler_state_cloud.GetAddressOf());
 
-		spriteCloud->render(immediate_context.Get(), 0, 0, 1280, 720);
-	}
+	immediate_context->IASetInputLayout(sprite_input_layout_cloud.Get());
+	immediate_context->VSSetShader(sprite_vertex_shader_cloud.Get(), nullptr, 0);
+	immediate_context->PSSetShader(sprite_pixel_shader_cloud.Get(), nullptr, 0);
+	immediate_context->PSSetSamplers(0, 1, sampler_state_cloud.GetAddressOf());
+
+	spriteCloud->render(immediate_context.Get(), 0, 0, 1280, 720);
+
 }
 
 CloudShader::~CloudShader()

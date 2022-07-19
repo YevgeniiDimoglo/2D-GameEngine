@@ -61,11 +61,10 @@ void DissolveShader::init(Microsoft::WRL::ComPtr<ID3D11Device> device, std::shar
 	}
 }
 
-void DissolveShader::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time)
+void DissolveShader::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context)
 {
-
 	timer_constants timer{};
-	timer.parameters.x = elapsed_time;
+	timer.parameters.x = this->timer;
 	immediate_context->UpdateSubresource(timer_constant_buffer.Get(), 0, 0, &timer, 0, 0);
 	immediate_context->VSSetConstantBuffers(1, 1, timer_constant_buffer.GetAddressOf());
 	immediate_context->PSSetConstantBuffers(1, 1, timer_constant_buffer.GetAddressOf());
@@ -79,6 +78,7 @@ void DissolveShader::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microso
 
 
 	spriteDissolve->render(immediate_context.Get(), 0, 0, 1280, 720);
+	this->timer += 0.01f;
 
 }
 

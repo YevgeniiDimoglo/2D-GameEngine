@@ -21,7 +21,7 @@ public:
 	~DissolveShader();
 
 	void init(Microsoft::WRL::ComPtr<ID3D11Device> device, std::shared_ptr<sprite>& sprite);
-	void render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time);
+	void render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context);
 
 private:
 
@@ -44,4 +44,5 @@ private:
 
 	std::shared_ptr<sprite> spriteDissolve;
 
+	float timer = 0;
 };
