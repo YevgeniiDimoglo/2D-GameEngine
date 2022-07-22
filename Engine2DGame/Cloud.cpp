@@ -75,7 +75,7 @@ void CloudShader::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft:
 {
 
 	timer_constants timer{};
-	timer.parameters.x = elapsed_time * 10;
+	timer.parameters.x = elapsed_time;
 	immediate_context->UpdateSubresource(timer_constant_buffer.Get(), 0, 0, &timer, 0, 0);
 	immediate_context->VSSetConstantBuffers(1, 1, timer_constant_buffer.GetAddressOf());
 	immediate_context->PSSetConstantBuffers(1, 1, timer_constant_buffer.GetAddressOf());

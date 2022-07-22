@@ -14,20 +14,18 @@ bool hitCheckCircle(DirectX::XMFLOAT2 pos1, float r1, DirectX::XMFLOAT2 pos2, fl
     return false;
 }
 
-//--------------------------------------
-//  OBJ2D“¯m‚Ì‚ ‚½‚è”»’è
-//--------------------------------------
+
 bool hitCheck(Enemy* enemy, Shot* shot)
-{
+{   
+    if (enemy->getAct() == 0) return 0;
+
     return hitCheckCircle(
         { enemy->getPos().x + 32, enemy->getPos().y + 32 }, 32,
         { shot->getPos().x + 8, shot->getPos().y + 8 }, 8
     );
 }
 
-//--------------------------------------
-//  ‚ ‚½‚è”»’è
-//--------------------------------------
+
 void judge(std::vector<Shot>& listOfShots, std::vector<Enemy>& listOfEnemies)
 {
     // ƒvƒŒƒCƒ„[vs“G‚Ì‚ ‚½‚è”»’è

@@ -66,5 +66,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_state_enemy;
 
 	std::unique_ptr<sprite> spriteEnemy;
+	std::unique_ptr<sprite> deathAnimation;
 };
 

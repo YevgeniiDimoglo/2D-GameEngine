@@ -103,5 +103,8 @@ private:
 
 	std::unique_ptr<sprite> spritePlayer;
 	std::unique_ptr<sprite> spriteJet;
+	std::unique_ptr<sprite> spriteAmmo;
+	std::unique_ptr<sprite> spriteAmmoTypeOne;
+	std::unique_ptr<sprite> spriteAmmoTypeTwo;
 
 };

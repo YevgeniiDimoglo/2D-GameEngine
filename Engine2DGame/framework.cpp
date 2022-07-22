@@ -157,7 +157,7 @@ bool framework::initialize()
 
 	background_sprite = std::make_shared<sprite>(device.Get(), L".\\resources\\background.png");
 	cloud_sprite = std::make_shared<sprite>(device.Get(), L".\\resources\\background.png");
-	foreground_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\boss_attack.png");
+	foreground_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\bossAttackAnim\\boss_attack.png");
 
 	font_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font4.png");
 	font_sprite_d = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font_orig.png");
@@ -354,7 +354,6 @@ void framework::renderSceneTwo(float elapsed_time/*Elapsed seconds from last fra
 	cloudShader.render(device.Get(), immediate_context.Get(), timer);
 
 	player.render(device.Get(), immediate_context.Get(), timer);
-	enemy.render(device.Get(), immediate_context.Get(), timer);
 
 	for (auto p = listOfShots.begin(); p != listOfShots.end(); ++p)
 	{

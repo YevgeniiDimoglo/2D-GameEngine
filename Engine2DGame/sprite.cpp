@@ -311,22 +311,17 @@ void sprite::circle(ID3D11DeviceContext* immediate_context,
 	for (int i = 0; i <= n; i++)
 	{
 		float rx, ry;
-#ifdef GAMELIB_PLUS_UP
-		rx = cosf(arc * i) * radius * scale.x;
-		ry = sinf(arc * i) * radius * scale.y;
-#else
+
 		rx = cosf(arc * -i) * radius * scale.x;
 		ry = sinf(arc * -i) * radius * scale.y;
-#endif
+
 		p->position.x = center.x + rx * cosValue - ry * sinValue;
 		p->position.y = center.y + rx * sinValue + ry * cosValue;
 
 		p->position.x = -1.0f + p->position.x * 2 / viewport.Width;
-#ifdef GAMELIB_PLUS_UP
-		p->position.y = -1.0f + p->position.y * 2 / viewport.Height;
-#else
+
 		p->position.y = 1.0f - p->position.y * 2 / viewport.Height;
-#endif
+
 		p->color = color;
 		p++;
 
@@ -334,11 +329,9 @@ void sprite::circle(ID3D11DeviceContext* immediate_context,
 		p->position.y = center.y;
 
 		p->position.x = -1.0f + p->position.x * 2 / viewport.Width;
-#ifdef GAMELIB_PLUS_UP
-		p->position.y = -1.0f + p->position.y * 2 / viewport.Height;
-#else
+
 		p->position.y = 1.0f - p->position.y * 2 / viewport.Height;
-#endif
+
 		p->color = color;
 		p++;
 	}

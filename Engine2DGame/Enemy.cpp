@@ -9,11 +9,13 @@ void Enemy::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 {
 	ep.pos = { 100, 200 };
 	ep.angle = -180;
-	ep.hp = 10;
+	ep.hp = 5;
 	ep.radius = 32;
 	ep.act = 1;
+	ep.timer = 0;
 
 	spriteEnemy = std::make_unique<sprite>(device.Get(), L".\\resources\\enemy\\enemy.png");
+	deathAnimation = std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\bomb.png");
 
 	HRESULT hr{ S_OK };
 
@@ -61,10 +63,9 @@ void Enemy::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 
 void Enemy::update(DirectX::XMFLOAT2 pos, float angle)
 {
-	if (ep.hp <= 0)
+	if (ep.hp < 0)
 	{
-		ep = {};
-		ep.act = 0;
+		ep.act = 9;
 	}
 
 	ep.pos.x += pos.x;
@@ -76,6 +77,16 @@ void Enemy::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::
 {
 	if (ep.act == 0) return;
 
+	if (ep.act == 9)
+	{
+		deathAnimation->render(immediate_context.Get(), ep.pos.x - 32, ep.pos.y - 32, 128, 128, 1.0f, 1.0f, 1.0f, 1.0f, 0, ep.timer % 10 * 256.0f, ep.timer / 10 * 256.0f, 256, 256);
+		ep.timer++;
+		if (ep.timer == 40)
+		{
+			ep = {};
+		}
+	}
+	else
 	{
 		immediate_context->IASetInputLayout(sprite_input_layout_enemy.Get());
 		immediate_context->VSSetShader(sprite_vertex_shader_enemy.Get(), nullptr, 0);

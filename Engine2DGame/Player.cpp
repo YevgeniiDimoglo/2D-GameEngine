@@ -13,6 +13,9 @@ void Player::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 
 	spritePlayer = std::make_unique<sprite>(device.Get(), L".\\resources\\player\\player2.png");
 	spriteJet = std::make_unique<sprite>(device.Get(), L".\\resources\\FlameLetters\\ShapeTextureFull.png");
+	spriteAmmo =  std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\shield.png");
+	spriteAmmoTypeOne = std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\rocket.png");
+	spriteAmmoTypeTwo = std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\shield_icon.png");
 	
 
 	load_texture_from_file(device.Get(), L".\\resources\\FlameLetters\\NoiseTexture1.png", mask_texture_noise1.GetAddressOf(), &mask_texture2dDesc);
@@ -185,6 +188,8 @@ void Player::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL:
 
 	}
 
+	spriteAmmoTypeOne->render(immediate_context.Get(), 50 + 8, 650 + 8, 48, 48, 1.0f, 1.0f, 1.0f, 1.0f, 0);
+	spriteAmmo->render(immediate_context.Get(), 50, 650, 64, 64, 1.0f, 1.0f, 1.0f, 1.0f, 0);
 }
 
 Shot* Player::searchSet(std::vector<Shot>& shots)
