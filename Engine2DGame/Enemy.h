@@ -15,7 +15,7 @@ public:
 
 	void init(Microsoft::WRL::ComPtr<ID3D11Device> device, Player* player);
 	void render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time);
-	void update(DirectX::XMFLOAT2 pos, float angle, std::vector<Shot>& listOfShots);
+	void update(std::vector<Shot>& listOfShots);
 	Shot* searchSet(std::vector<Shot>& shots);
 	float calculateAngle(float posX, float posY, float posX2, float PosY2);
 	float calculateDistance(float posX, float posX2, float posY, float posY2);

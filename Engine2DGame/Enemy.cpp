@@ -8,7 +8,7 @@ Enemy::Enemy()
 void Enemy::init(Microsoft::WRL::ComPtr<ID3D11Device> device, Player* player)
 {
 	this->player = player;
-	enemyProperty.pos = { 100, 200 };
+	enemyProperty.pos = { 9999, 9999 };
 	enemyProperty.angle = 90;
 	enemyProperty.hp = 5;
 	enemyProperty.radius = 32;
@@ -62,9 +62,14 @@ void Enemy::init(Microsoft::WRL::ComPtr<ID3D11Device> device, Player* player)
 			"sprite_ps.cso",
 			sprite_pixel_shader_enemy.GetAddressOf());
 	}
+
+	float distance = rand() % 300 + 800;
+	float randomangle = rand() % 360;
+	enemyProperty.pos.x = 540 + cos(randomangle) * distance;
+	enemyProperty.pos.y = 360 + sin(randomangle) * distance;
 }
 
-void Enemy::update(DirectX::XMFLOAT2 pos, float angle, std::vector<Shot>& listOfShots)
+void Enemy::update(std::vector<Shot>& listOfShots)
 {
 	if (enemyProperty.act == 0) return;
 
@@ -84,7 +89,7 @@ void Enemy::update(DirectX::XMFLOAT2 pos, float angle, std::vector<Shot>& listOf
 
 	if (calculateDistance(player->getPos().x + 60, enemyProperty.pos.x + 28, player->getPos().y + 60, enemyProperty.pos.y + 28) >= 500)
 	{
-		if (enemyProperty.timer % 1000 == 0)
+		if (enemyProperty.timer % 500 == 0)
 		{
 			enemyProperty.randomLocation = { (540 + (rand()% 600 - 300)) * 1.0f, (360 + (rand() % 400 - 200)) * 1.0f };
 		}
@@ -174,10 +179,6 @@ void Enemy::update(DirectX::XMFLOAT2 pos, float angle, std::vector<Shot>& listOf
 		}
 	}
 
-	enemyProperty.pos.x += pos.x;
-	enemyProperty.pos.y += pos.y;
-	enemyProperty.angle += angle;
-
 	if (enemyProperty.angle > 360)
 	{
 		enemyProperty.angle = 0;
@@ -200,7 +201,7 @@ void Enemy::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::
 		enemyProperty.animeTimer++;
 		if (enemyProperty.animeTimer == 40)
 		{
-			enemyProperty = {};
+			enemyProperty.act = 0;
 		}
 	}
 	else

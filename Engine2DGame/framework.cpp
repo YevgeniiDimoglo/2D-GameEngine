@@ -184,7 +184,7 @@ bool framework::initialize()
 		p->init(device.Get(), &player);
 		auto index = std::distance(listOfEnemies.begin(), p);
 		p->setState(index);
-		p->update({ float(p->getState() * 64), float(p->getState() * 0)}, player.getAngle(), listOfEnemyShots);
+		p->update(listOfEnemyShots);
 	}
 	srand(time(0));
 	return true;
@@ -271,9 +271,43 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 		}
 	}
 
-	for (auto p = listOfEnemies.begin(); p != listOfEnemies.end(); ++p)
+	switch (waveNumber)
 	{
-		p->update({0, 0}, 0, listOfEnemyShots);
+		case 1:
+			updateEnemies(0, 1);
+			checkEnemies(0, 1);
+			waveStarted = timer;
+			break;
+		case 2:
+			updateEnemies(1, 3);
+			checkEnemies(1, 3);
+			waveStarted = timer;
+			break;
+		case 3:
+			updateEnemies(3, 5);
+			checkEnemies(3, 5);
+			waveStarted = timer;
+			break;
+		case 4:
+			updateEnemies(5, 8);
+			checkEnemies(5, 8);
+			waveStarted = timer;
+			break;
+		case 5:
+			updateEnemies(8, 13);
+			checkEnemies(8, 13);
+			waveStarted = timer;
+			break;
+		case 6:
+			updateEnemies(13, 21);
+			checkEnemies(13, 21);
+			waveStarted = timer;
+			break;
+		case 7:
+			updateEnemies(21, 34);
+			checkEnemies(21, 34);
+			waveStarted = timer;
+			break;
 	}
 
 	if (timer - oldTimer > 0.1f)
@@ -289,6 +323,7 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 	if (GetAsyncKeyState(VK_RETURN) < 0)
 	{
 		sceneNumber = 1;
+		waveNumber = 1;
 	}
 
 	if (GetAsyncKeyState(0x31) < 0)
@@ -300,7 +335,7 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 	{
 		sceneNumber = 1;
 	}
-
+	
 	judge(listOfShots, listOfEnemies);
 }
 void framework::renderSceneOne(float elapsed_time/*Elapsed seconds from last frame*/)
@@ -391,6 +426,37 @@ void framework::renderSceneTwo(float elapsed_time/*Elapsed seconds from last fra
 		}
 	}
 
+	switch (waveNumber)
+	{
+		if (timer - waveStarted <= 2)
+		{
+			case 1:
+				font_sprite->textout(immediate_context.Get(), "WAVE 1", 300, 400, 150, 120, 1.0f, 0.0f, 1.0f, 1.0f);
+				break;
+			case 2:
+				font_sprite->textout(immediate_context.Get(), "WAVE 2", 300, 400, 150, 120, 1.0f, 0.0f, 1.0f, 1.0f);
+				break;
+			case 3:
+				font_sprite->textout(immediate_context.Get(), "WAVE 3", 300, 400, 150, 120, 1.0f, 0.0f, 1.0f, 1.0f);
+				break;
+			case 4:
+				font_sprite->textout(immediate_context.Get(), "WAVE 4", 300, 400, 150, 120, 1.0f, 0.0f, 1.0f, 1.0f);
+				break;
+			case 5:
+				font_sprite->textout(immediate_context.Get(), "WAVE 5", 300, 400, 150, 120, 1.0f, 0.0f, 1.0f, 1.0f);
+				break;
+			case 6:
+				font_sprite->textout(immediate_context.Get(), "WAVE 6", 300, 400, 150, 120, 1.0f, 0.0f, 1.0f, 1.0f);
+				break;
+			case 7:
+				font_sprite->textout(immediate_context.Get(), "WAVE 7", 300, 400, 150, 120, 1.0f, 0.0f, 1.0f, 1.0f);
+				break;
+			default:
+				break;
+		}
+
+	}
+
 	for (auto p = listOfEnemies.begin(); p != listOfEnemies.end(); ++p)
 	{
 		p->render(device.Get(), immediate_context.Get(), timer);
@@ -408,6 +474,26 @@ void framework::renderSceneTwo(float elapsed_time/*Elapsed seconds from last fra
 	UINT sync_interval{ 1 };
 	swap_chain->Present(sync_interval, 0);
 
+}
+
+void framework::updateEnemies(int start, int end)
+{
+	for (auto p = listOfEnemies.begin() + start; p != listOfEnemies.begin() + end; ++p)
+	{
+		p->update(listOfEnemyShots);
+	}
+}
+
+void framework::checkEnemies(int start, int end)
+{
+	for (auto p = listOfEnemies.begin() + start; p != listOfEnemies.begin() + end; ++p)
+	{
+		if (p->getAct() != 0)
+		{
+			return;
+		}
+	}
+	waveNumber++;
 }
 
 bool framework::uninitialize()

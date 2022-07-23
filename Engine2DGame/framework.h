@@ -77,8 +77,11 @@ public:
 
 	float timer;
 	float oldTimer;
+	float waveStarted;
 	bool checkKey = false;
+	bool checkWave = false;
 	int sceneNumber = 0;
+	int waveNumber = 0;
 
 	framework(HWND hwnd);
 	~framework();
@@ -194,6 +197,8 @@ private:
 	void update(float elapsed_time/*Elapsed seconds from last frame*/);
 	void renderSceneOne(float elapsed_time/*Elapsed seconds from last frame*/);
 	void renderSceneTwo(float elapsed_time/*Elapsed seconds from last frame*/);
+	void updateEnemies(int start, int end);
+	void checkEnemies(int start, int end);
 	bool uninitialize();
 
 private:
