@@ -8,8 +8,8 @@ Player::Player()
 void Player::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 {
 	
-	pp.pos = { 512, 512 };
-	pp.angle = 0;
+	playerProperty.pos = { 512, 512 };
+	playerProperty.angle = 0;
 
 	spritePlayer = std::make_unique<sprite>(device.Get(), L".\\resources\\player\\player2.png");
 	spriteJet = std::make_unique<sprite>(device.Get(), L".\\resources\\FlameLetters\\ShapeTextureFull.png");
@@ -100,26 +100,26 @@ void Player::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 
 void Player::update(DirectX::XMFLOAT2 pos, float angle)
 {
-	if (pp.pos.x < 30 - 64)
+	if (playerProperty.pos.x < 30 - 64)
 	{
-		pp.pos.x = 30 - 64;
+		playerProperty.pos.x = 30 - 64;
 	}
-	if (pp.pos.x >= 1280 - 30 - 64)
+	if (playerProperty.pos.x >= 1280 - 30 - 64)
 	{
-		pp.pos.x = 1280 - 30 - 64;
+		playerProperty.pos.x = 1280 - 30 - 64;
 	}
-	if (pp.pos.y < 30 - 64)
+	if (playerProperty.pos.y < 30 - 64)
 	{
-		pp.pos.y = 30 - 64;
+		playerProperty.pos.y = 30 - 64;
 	}
-	if (pp.pos.y > 720 - 30 - 64)
+	if (playerProperty.pos.y > 720 - 30 - 64)
 	{
-		pp.pos.y = 720 - 30 - 64;
+		playerProperty.pos.y = 720 - 30 - 64;
 	}
 
-	pp.pos.x += pos.x;
-	pp.pos.y += pos.y;
-	pp.angle += angle;
+	playerProperty.pos.x += pos.x;
+	playerProperty.pos.y += pos.y;
+	playerProperty.angle += angle;
 }
 
 void Player::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time)
@@ -154,25 +154,25 @@ void Player::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL:
 		immediate_context->PSSetShaderResources(3, 1, mask_texture_flame1.GetAddressOf());
 		immediate_context->PSSetShaderResources(4, 1, mask_texture_flame2.GetAddressOf());
 
-		float tempX1 = cosf(pp.angle * 3.14 / 180) * (pp.pos.x + 45 - (pp.pos.x + 64)) - sinf(pp.angle * 3.14 / 180) * (pp.pos.y + 90 - (pp.pos.y + 64)) + pp.pos.x + 64;
-		float tempY1 = sinf(pp.angle * 3.14 / 180) * (pp.pos.x + 45 - (pp.pos.x + 64)) + cosf(pp.angle * 3.14 / 180) * (pp.pos.y + 90 - (pp.pos.y + 64)) + pp.pos.y + 64;
-		float tempX2 = cosf(pp.angle * 3.14 / 180) * (pp.pos.x + 83 - (pp.pos.x + 64)) - sinf(pp.angle * 3.14 / 180) * (pp.pos.y + 90 - (pp.pos.y + 64)) + pp.pos.x + 64;
-		float tempY2 = sinf(pp.angle * 3.14 / 180) * (pp.pos.x + 83 - (pp.pos.x + 64)) + cosf(pp.angle * 3.14 / 180) * (pp.pos.y + 90 - (pp.pos.y + 64)) + pp.pos.y + 64;
+		float tempX1 = cosf(playerProperty.angle * 3.14 / 180) * (playerProperty.pos.x + 45 - (playerProperty.pos.x + 64)) - sinf(playerProperty.angle * 3.14 / 180) * (playerProperty.pos.y + 90 - (playerProperty.pos.y + 64)) + playerProperty.pos.x + 64;
+		float tempY1 = sinf(playerProperty.angle * 3.14 / 180) * (playerProperty.pos.x + 45 - (playerProperty.pos.x + 64)) + cosf(playerProperty.angle * 3.14 / 180) * (playerProperty.pos.y + 90 - (playerProperty.pos.y + 64)) + playerProperty.pos.y + 64;
+		float tempX2 = cosf(playerProperty.angle * 3.14 / 180) * (playerProperty.pos.x + 83 - (playerProperty.pos.x + 64)) - sinf(playerProperty.angle * 3.14 / 180) * (playerProperty.pos.y + 90 - (playerProperty.pos.y + 64)) + playerProperty.pos.x + 64;
+		float tempY2 = sinf(playerProperty.angle * 3.14 / 180) * (playerProperty.pos.x + 83 - (playerProperty.pos.x + 64)) + cosf(playerProperty.angle * 3.14 / 180) * (playerProperty.pos.y + 90 - (playerProperty.pos.y + 64)) + playerProperty.pos.y + 64;
 
-		if (pp.act == 0)
+		if (playerProperty.act == 0)
 		{
-			spriteJet->render(immediate_context.Get(), tempX1 - 10, tempY1 - 20, 20, 40, 1.0f, 1.0, 1.0f, 1.0f, 180 + pp.angle);
-			spriteJet->render(immediate_context.Get(), tempX2 - 10, tempY2 - 20, 20, 40, 1.0f, 1.0, 1.0f, 1.0f, 180 + pp.angle);
+			spriteJet->render(immediate_context.Get(), tempX1 - 10, tempY1 - 20, 20, 40, 1.0f, 1.0, 1.0f, 1.0f, 180 + playerProperty.angle);
+			spriteJet->render(immediate_context.Get(), tempX2 - 10, tempY2 - 20, 20, 40, 1.0f, 1.0, 1.0f, 1.0f, 180 + playerProperty.angle);
 		}
-		if (pp.act == 1)
+		if (playerProperty.act == 1)
 		{
-			spriteJet->render(immediate_context.Get(), tempX1 - 10, tempY1 - 30, 20, 60, 1.0f, 1.0, 1.0f, 1.0f, 180 + pp.angle);
-			spriteJet->render(immediate_context.Get(), tempX2 - 10, tempY2 - 30, 20, 60, 1.0f, 1.0, 1.0f, 1.0f, 180 + pp.angle);
+			spriteJet->render(immediate_context.Get(), tempX1 - 10, tempY1 - 30, 20, 60, 1.0f, 1.0, 1.0f, 1.0f, 180 + playerProperty.angle);
+			spriteJet->render(immediate_context.Get(), tempX2 - 10, tempY2 - 30, 20, 60, 1.0f, 1.0, 1.0f, 1.0f, 180 + playerProperty.angle);
 		}		
-		if (pp.act == 2)
+		if (playerProperty.act == 2)
 		{
-			spriteJet->render(immediate_context.Get(), tempX1 - 10, tempY1 - 15, 20, 30, 1.0f, 1.0, 1.0f, 1.0f, 180 + pp.angle);
-			spriteJet->render(immediate_context.Get(), tempX2 - 10, tempY2 - 15, 20, 30, 1.0f, 1.0, 1.0f, 1.0f, 180 + pp.angle);
+			spriteJet->render(immediate_context.Get(), tempX1 - 10, tempY1 - 15, 20, 30, 1.0f, 1.0, 1.0f, 1.0f, 180 + playerProperty.angle);
+			spriteJet->render(immediate_context.Get(), tempX2 - 10, tempY2 - 15, 20, 30, 1.0f, 1.0, 1.0f, 1.0f, 180 + playerProperty.angle);
 		}
 
 	}
@@ -184,7 +184,7 @@ void Player::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL:
 
 		immediate_context->PSSetSamplers(0, 1, sampler_state_flame.GetAddressOf());
 
-		spritePlayer->render(immediate_context.Get(), pp.pos.x, pp.pos.y, 128, 128, 1.0f, 1.0f, 1.0f, 1.0f, pp.angle);
+		spritePlayer->render(immediate_context.Get(), playerProperty.pos.x, playerProperty.pos.y, 128, 128, 1.0f, 1.0f, 1.0f, 1.0f, playerProperty.angle);
 
 	}
 

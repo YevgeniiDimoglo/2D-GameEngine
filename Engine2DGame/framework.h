@@ -71,7 +71,8 @@ public:
 	Player player;
 	Enemy enemy;
 
-	std::vector<Shot> listOfShots{512};
+	std::vector<Shot> listOfShots{512}; 
+	std::vector<Shot> listOfEnemyShots{ 512 };
 	std::vector<Enemy> listOfEnemies{100};
 
 	float timer;

@@ -157,7 +157,8 @@ bool framework::initialize()
 
 	background_sprite = std::make_shared<sprite>(device.Get(), L".\\resources\\background.png");
 	cloud_sprite = std::make_shared<sprite>(device.Get(), L".\\resources\\background.png");
-	foreground_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\bossAttackAnim\\boss_attack.png");
+	//foreground_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\bossAttackAnim\\boss_attack.png");
+	foreground_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\center.png");
 
 	font_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font4.png");
 	font_sprite_d = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font_orig.png");
@@ -166,21 +167,26 @@ bool framework::initialize()
 	dissolveShader.init(device.Get(), background_sprite);
 	player.init(device.Get());
 	cloudShader.init(device.Get(), cloud_sprite);
-	enemy.init(device.Get());
+	enemy.init(device.Get(), &player);
 
 	for (auto p = listOfShots.begin(); p!= listOfShots.end(); ++p)
 	{
 		p->init(device.Get());
 	}
 
-	for (auto p = listOfEnemies.begin(); p != listOfEnemies.end(); ++p)
+	for (auto p = listOfEnemyShots.begin(); p != listOfEnemyShots.end(); ++p)
 	{
-		p->init(device.Get());
-		auto index = std::distance(listOfEnemies.begin(), p);
-		p->setState(index);
-		p->update({ float(p->getState() * 64), float(p->getState() * 0)}, player.getAngle());
+		p->initEnemy(device.Get());
 	}
 
+	for (auto p = listOfEnemies.begin(); p != listOfEnemies.end(); ++p)
+	{
+		p->init(device.Get(), &player);
+		auto index = std::distance(listOfEnemies.begin(), p);
+		p->setState(index);
+		p->update({ float(p->getState() * 64), float(p->getState() * 0)}, player.getAngle(), listOfEnemyShots);
+	}
+	srand(time(0));
 	return true;
 }
 
@@ -253,9 +259,21 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 		}
 	}
 
+	for (auto p = listOfEnemyShots.begin(); p != listOfEnemyShots.end(); ++p)
+	{
+		if (p->getPos().x < -256 || p->getPos().x > 1280 + 256 || p->getPos().y < -256 || p->getPos().y > 1280 + 256)
+		{
+			p->setAct(10);
+		}
+		if (p->getAct() != 10)
+		{
+			p->updateEnemy(enemy.getPos(), enemy.getAngle());
+		}
+	}
+
 	for (auto p = listOfEnemies.begin(); p != listOfEnemies.end(); ++p)
 	{
-		p->update({0, 0}, 0);
+		p->update({0, 0}, 0, listOfEnemyShots);
 	}
 
 	if (timer - oldTimer > 0.1f)
@@ -355,6 +373,8 @@ void framework::renderSceneTwo(float elapsed_time/*Elapsed seconds from last fra
 
 	player.render(device.Get(), immediate_context.Get(), timer);
 
+	foreground_sprite->render(immediate_context.Get(), player.getPos().x + 60, player.getPos().y + 60, 8, 8);
+
 	for (auto p = listOfShots.begin(); p != listOfShots.end(); ++p)
 	{
 		if (p->getAct() != 10)
@@ -363,9 +383,18 @@ void framework::renderSceneTwo(float elapsed_time/*Elapsed seconds from last fra
 		}
 	}
 
+	for (auto p = listOfEnemyShots.begin(); p != listOfEnemyShots.end(); ++p)
+	{
+		if (p->getAct() != 10)
+		{
+			p->renderEnemy(device.Get(), immediate_context.Get(), timer);
+		}
+	}
+
 	for (auto p = listOfEnemies.begin(); p != listOfEnemies.end(); ++p)
 	{
 		p->render(device.Get(), immediate_context.Get(), timer);
+		foreground_sprite->render(immediate_context.Get(), p->getPos().x + 28, p->getPos().y + 30, 8, 8);
 	}
 
 	dissolveShader.render(device.Get(), immediate_context.Get());

@@ -7,25 +7,27 @@
 #define ENEMY_PIVOT_X          (64.0f)     
 #define ENEMY_PIVOT_Y          (64.0f)  
 
-class Enemy :
-    public Player
+class Enemy 
 {
 public:
 	Enemy();
 	~Enemy();
 
-	void init(Microsoft::WRL::ComPtr<ID3D11Device> device);
+	void init(Microsoft::WRL::ComPtr<ID3D11Device> device, Player* player);
 	void render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time);
-	void update(DirectX::XMFLOAT2 pos, float angle);
+	void update(DirectX::XMFLOAT2 pos, float angle, std::vector<Shot>& listOfShots);
+	Shot* searchSet(std::vector<Shot>& shots);
+	float calculateAngle(float posX, float posY, float posX2, float PosY2);
+	float calculateDistance(float posX, float posX2, float posY, float posY2);
 
-	DirectX::XMFLOAT2 getPos() { return ep.pos; }
-	float getAngle() { return ep.angle; }
-	int getAct() { return ep.act; }
-	int getState() { return ep.state; }
-	int getHP() { return ep.hp; }
-	void setAct(int act) { this->ep.act = act; }
-	void setState(int state) { this->ep.state = state; }
-	void setHP(int HP) { this->ep.hp = HP; }
+	DirectX::XMFLOAT2 getPos() { return enemyProperty.pos; }
+	float getAngle() { return enemyProperty.angle; }
+	int getAct() { return enemyProperty.act; }
+	int getState() { return enemyProperty.state; }
+	int getHP() { return enemyProperty.hp; }
+	void setAct(int act) { this->enemyProperty.act = act; }
+	void setState(int state) { this->enemyProperty.state = state; }
+	void setHP(int HP) { this->enemyProperty.hp = HP; }
 
 private:
 
@@ -33,6 +35,7 @@ private:
 	{
 		int                 state;      // 状態
 		int                 timer;      // タイマー
+		int                 oldTimer;
 
 		bool                onGround;   // 地面フラグ
 		bool                jumpEnd;    // 着地フラグ
@@ -47,7 +50,8 @@ private:
 		DirectX::XMFLOAT4             color;      // 色
 
 		DirectX::XMFLOAT2             speed;      // 速度
-		int                 jumpCount;  // 残りジャンプ回数
+		DirectX::XMFLOAT2             randomLocation;      // 速度
+		
 		int                 act;        // プレイヤーの行動遷移用
 		int                 anime;      // アニメが現在何コマ目か
 		int                 animeTimer; // アニメ用タイマー
@@ -58,7 +62,7 @@ private:
 		float               angle;      // 角度
 
 		int                 hp;
-	} ep;
+	} enemyProperty;
 
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> sprite_vertex_shader_enemy;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> sprite_input_layout_enemy;
@@ -67,5 +71,7 @@ private:
 
 	std::unique_ptr<sprite> spriteEnemy;
 	std::unique_ptr<sprite> deathAnimation;
+
+	Player* player;
 };
 

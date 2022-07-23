@@ -29,6 +29,10 @@ public:
 	void render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time);
 	void update(DirectX::XMFLOAT2 pos, float angle);
 
+	void initEnemy(Microsoft::WRL::ComPtr<ID3D11Device> device);
+	void renderEnemy(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time);
+	void updateEnemy(DirectX::XMFLOAT2 pos, float angle);
+
 	DirectX::XMFLOAT2 getPos() { return sp.pos; }
 	float getAngle() { return sp.angle; }
 	const int getAct() { return sp.act; }

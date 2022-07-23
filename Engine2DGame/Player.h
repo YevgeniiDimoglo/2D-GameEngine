@@ -32,9 +32,9 @@ public:
 	Shot* searchSet(std::vector<Shot>& shots);
 	void update(DirectX::XMFLOAT2 pos, float angle);
 
-	DirectX::XMFLOAT2 getPos() { return pp.pos; }
-	float getAngle() { return pp.angle; }
-	void setAct(int act) { this->pp.act = act; }
+	DirectX::XMFLOAT2 getPos() { return playerProperty.pos; }
+	float getAngle() { return playerProperty.angle; }
+	void setAct(int act) { this->playerProperty.act = act; }
 
 private:
 
@@ -67,7 +67,7 @@ private:
 		float               angle;      // Šp“x
 
 		int                 hp;
-	} pp;
+	} playerProperty;
 
 	struct scroll_constants
 	{
