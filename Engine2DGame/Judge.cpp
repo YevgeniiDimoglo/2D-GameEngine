@@ -1,7 +1,5 @@
 #include "Judge.h"
 
-extern Player player;
-
 bool hitCheckCircle(DirectX::XMFLOAT2 pos1, float r1, DirectX::XMFLOAT2 pos2, float r2)
 {
     float dx = pos2.x - pos1.x;
@@ -25,10 +23,19 @@ bool hitCheck(Enemy* enemy, Shot* shot)
     );
 }
 
+bool hitCheckPlayer(Player& player, Shot* shot)
+{
+    if (player.getAct() == 0) return 0;
+
+    return hitCheckCircle(
+        { player.getPos().x + 60, player.getPos().y + 60 }, 40,
+        { shot->getPos().x + 8, shot->getPos().y + 8 }, 8
+    );
+}
+
 
 void judge(std::vector<Shot>& listOfShots, std::vector<Enemy>& listOfEnemies)
 {
-    // ƒvƒŒƒCƒ„[vs“G‚Ì‚ ‚½‚è”»’è
     for (int i = 0; i < 512; ++i)
     {
         if (listOfShots[i].getAct() != 10)
@@ -42,6 +49,21 @@ void judge(std::vector<Shot>& listOfShots, std::vector<Enemy>& listOfEnemies)
                 }
             }
 
+        }
+    }
+}
+
+void judgePlayer(Player& player, std::vector<Shot>& listOfShots)
+{
+    for (int i = 0; i < 512; ++i)
+    {
+        if (listOfShots[i].getAct() != 10)
+        {
+            if (hitCheckPlayer(player, &listOfShots[i]))
+            {
+                player.setHP(player.getHP() - 1);
+                listOfShots[i].setAct(10);
+            }
         }
     }
 }

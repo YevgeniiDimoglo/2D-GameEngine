@@ -22,6 +22,7 @@ public:
 
 	void init(Microsoft::WRL::ComPtr<ID3D11Device> device, std::shared_ptr<sprite>& sprite);
 	void render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context);
+	void setTime(int time);
 
 private:
 

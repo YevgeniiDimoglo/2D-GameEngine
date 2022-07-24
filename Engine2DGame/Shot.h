@@ -27,7 +27,7 @@ public:
 
 	void init(Microsoft::WRL::ComPtr<ID3D11Device> device);
 	void render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time);
-	void update(DirectX::XMFLOAT2 pos, float angle);
+	void update(DirectX::XMFLOAT2 pos, float angle, bool shotCount);
 
 	void initEnemy(Microsoft::WRL::ComPtr<ID3D11Device> device);
 	void renderEnemy(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time);

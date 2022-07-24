@@ -27,14 +27,17 @@ public:
 	Player();
 	~Player();
 
-	void init(Microsoft::WRL::ComPtr<ID3D11Device> device);
+	void init(Microsoft::WRL::ComPtr<ID3D11Device> device, std::vector<Shot>& listOfShots);
 	void render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time);
 	Shot* searchSet(std::vector<Shot>& shots);
-	void update(DirectX::XMFLOAT2 pos, float angle);
+	void update(DirectX::XMFLOAT2 pos, float angle, int action);
 
 	DirectX::XMFLOAT2 getPos() { return playerProperty.pos; }
 	float getAngle() { return playerProperty.angle; }
+	int getAct() { return playerProperty.act; }
 	void setAct(int act) { this->playerProperty.act = act; }
+	int getHP() { return playerProperty.hp; }
+	void setHP(int hp) { this->playerProperty.hp = hp; }
 
 private:
 
@@ -42,6 +45,7 @@ private:
 	{
 		int                 state;      // 状態
 		int                 timer;      // タイマー
+		int					oldTimer;
 
 		bool                onGround;   // 地面フラグ
 		bool                jumpEnd;    // 着地フラグ
@@ -56,7 +60,7 @@ private:
 		DirectX::XMFLOAT4             color;      // 色
 
 		DirectX::XMFLOAT2             speed;      // 速度
-		int                 jumpCount;  // 残りジャンプ回数
+		bool                shotCount;  // 残りジャンプ回数
 		int                 act;        // プレイヤーの行動遷移用
 		int                 anime;      // アニメが現在何コマ目か
 		int                 animeTimer; // アニメ用タイマー
@@ -106,5 +110,12 @@ private:
 	std::unique_ptr<sprite> spriteAmmo;
 	std::unique_ptr<sprite> spriteAmmoTypeOne;
 	std::unique_ptr<sprite> spriteAmmoTypeTwo;
+
+	std::unique_ptr<sprite> life0;
+	std::unique_ptr<sprite> life1;
+	std::unique_ptr<sprite> life2;
+	std::unique_ptr<sprite> life3;
+
+	std::vector<Shot>* listOfShots;
 
 };

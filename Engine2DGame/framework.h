@@ -61,9 +61,11 @@ public:
 
 	std::shared_ptr<sprite> background_sprite;
 	std::shared_ptr<sprite> cloud_sprite;
+
 	std::unique_ptr<sprite> font_sprite;
 	std::unique_ptr<sprite> font_sprite_d;
 	std::unique_ptr<sprite> foreground_sprite;
+	std::unique_ptr<sprite> fade_sprite;
 
 	FlameFont flameFont;
 	DissolveShader dissolveShader;
@@ -82,6 +84,7 @@ public:
 	bool checkWave = false;
 	int sceneNumber = 0;
 	int waveNumber = 0;
+	int waveAnimation = 0;
 
 	framework(HWND hwnd);
 	~framework();
@@ -124,10 +127,16 @@ public:
 				switch (sceneNumber)
 				{
 				case 0:
-					renderSceneOne(tictoc.time_interval());
+					renderTitle(tictoc.time_interval());
 					break;
 				case 1:
-					renderSceneTwo(tictoc.time_interval());
+					renderEnemyStage(tictoc.time_interval());
+					break;
+				case 2:
+					renderBossStage(tictoc.time_interval());
+					break;
+				case 10:
+					renderGameOver(tictoc.time_interval());
 					break;
 				default:
 					break;
@@ -194,9 +203,11 @@ public:
 
 private:
 	bool initialize();
-	void update(float elapsed_time/*Elapsed seconds from last frame*/);
-	void renderSceneOne(float elapsed_time/*Elapsed seconds from last frame*/);
-	void renderSceneTwo(float elapsed_time/*Elapsed seconds from last frame*/);
+	void update(float elapsed_time);
+	void renderTitle(float elapsed_time);
+	void renderEnemyStage(float elapsed_time);
+	void renderBossStage(float elapsed_time);
+	void renderGameOver(float elapsed_time);
 	void updateEnemies(int start, int end);
 	void checkEnemies(int start, int end);
 	bool uninitialize();

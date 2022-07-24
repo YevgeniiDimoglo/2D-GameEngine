@@ -16,11 +16,13 @@
 #include "texture.h"
 #include "Shot.h"
 #include "Enemy.h"
+#include "Player.h"
 
 bool hitCheckCircle(DirectX::XMFLOAT2 pos1, float r1, DirectX::XMFLOAT2 pos2, float r2);
 bool hitCheck(Enemy* enemy, Shot* shot);
-bool hitCheck(Player* player, Shot* shot);
+bool hitCheckPlayer(Player& player, Shot* shot);
 void judge(std::vector<Shot>& listOfShots, std::vector<Enemy>& listOfEnemies);
+void judgePlayer(Player& player, std::vector<Shot>& listOfShots);
 void judge2();
 
 

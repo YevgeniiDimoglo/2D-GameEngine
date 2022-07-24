@@ -58,12 +58,12 @@ void Shot::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 	}
 }
 
-void Shot::update(DirectX::XMFLOAT2 pos, float angle)
+void Shot::update(DirectX::XMFLOAT2 pos, float angle, bool shotCount)
 {
 	float tempX1 = 0;
 	float tempY1 = 0;
 
-	if(sp.state % 2 == 0)
+	if (shotCount)
 	{
 		tempX1 = cosf(angle * 3.14 / 180) * (pos.x + 35 - (pos.x + 64)) - sinf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.x + 64;
 		tempY1 = sinf(angle * 3.14 / 180) * (pos.x + 35 - (pos.x + 64)) + cosf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.y + 64;

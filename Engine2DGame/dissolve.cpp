@@ -82,6 +82,11 @@ void DissolveShader::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microso
 
 }
 
+void DissolveShader::setTime(int time)
+{
+	timer = time;
+}
+
 DissolveShader::~DissolveShader()
 {
 }
