@@ -77,44 +77,75 @@ void Enemy::update(std::vector<Shot>& listOfShots)
 	{
 		enemyProperty.act = 9;
 	}
-
-	float angleToPlayer = calculateAngle(player->getPos().x + 60, enemyProperty.pos.x + 28, enemyProperty.pos.y + 28, player->getPos().y + 60);
-	float angleToPlayer2 = angleToPlayer;
-	int change = 0;
-
-	if (angleToPlayer < 0)
+	else
 	{
-		angleToPlayer2 = 360 + angleToPlayer;
-	}
+		float angleToPlayer = calculateAngle(player->getPos().x + 60, enemyProperty.pos.x + 28, enemyProperty.pos.y + 28, player->getPos().y + 60);
+		float angleToPlayer2 = angleToPlayer;
+		int change = 0;
 
-	if (calculateDistance(player->getPos().x + 60, enemyProperty.pos.x + 28, player->getPos().y + 60, enemyProperty.pos.y + 28) >= 500)
-	{
-		if (enemyProperty.timer % 500 == 0)
+		if (angleToPlayer < 0)
 		{
-			enemyProperty.randomLocation = { (540 + (rand()% 600 - 300)) * 1.0f, (360 + (rand() % 400 - 200)) * 1.0f };
+			angleToPlayer2 = 360 + angleToPlayer;
 		}
 
-		float angleToPosition = calculateAngle(enemyProperty.randomLocation.x, enemyProperty.pos.x + 28, enemyProperty.pos.y + 28, enemyProperty.randomLocation.y);
-
-		if (angleToPosition < 0)
+		if (calculateDistance(player->getPos().x + 60, enemyProperty.pos.x + 28, player->getPos().y + 60, enemyProperty.pos.y + 28) >= 500)
 		{
-			angleToPosition = 360 + angleToPosition;
-		}
-
-		if (calculateDistance(enemyProperty.pos.x + 28, enemyProperty.randomLocation.x, enemyProperty.pos.y+ 28, enemyProperty.randomLocation.y) >= 10)
-		{
-			if (abs(enemyProperty.angle - angleToPosition) > 3)
+			if (enemyProperty.timer % 500 == 0)
 			{
-				if ((enemyProperty.angle - angleToPosition) < 0)
+				enemyProperty.randomLocation = { (540 + (rand() % 600 - 300)) * 1.0f, (360 + (rand() % 400 - 200)) * 1.0f };
+			}
+
+			float angleToPosition = calculateAngle(enemyProperty.randomLocation.x, enemyProperty.pos.x + 28, enemyProperty.pos.y + 28, enemyProperty.randomLocation.y);
+
+			if (angleToPosition < 0)
+			{
+				angleToPosition = 360 + angleToPosition;
+			}
+
+			if (calculateDistance(enemyProperty.pos.x + 28, enemyProperty.randomLocation.x, enemyProperty.pos.y + 28, enemyProperty.randomLocation.y) >= 10)
+			{
+				if (abs(enemyProperty.angle - angleToPosition) > 3)
+				{
+					if ((enemyProperty.angle - angleToPosition) < 0)
+					{
+						change++;
+					}
+					if ((enemyProperty.angle - angleToPosition) > 0)
+					{
+						change--;
+					}
+
+					if (abs(enemyProperty.angle - angleToPosition) > 180)
+					{
+						change = -change;
+					}
+
+					enemyProperty.angle += change;
+				}
+				else
+				{
+					enemyProperty.pos.x += sinf(angleToPosition * 3.14 / 180) * 1;
+					enemyProperty.pos.y += -cosf(angleToPosition * 3.14 / 180) * 1;
+				}
+			}
+
+		}
+
+		if (calculateDistance(player->getPos().x + 60, enemyProperty.pos.x + 28, player->getPos().y + 60, enemyProperty.pos.y + 28) < 500)
+		{
+
+			if (abs(enemyProperty.angle - angleToPlayer2) > 3)
+			{
+				if ((enemyProperty.angle - angleToPlayer2) < 0)
 				{
 					change++;
 				}
-				if ((enemyProperty.angle - angleToPosition) > 0)
+				if ((enemyProperty.angle - angleToPlayer2) > 0)
 				{
 					change--;
 				}
 
-				if (abs(enemyProperty.angle - angleToPosition) > 180)
+				if (abs(enemyProperty.angle - angleToPlayer2) > 180)
 				{
 					change = -change;
 				}
@@ -123,72 +154,44 @@ void Enemy::update(std::vector<Shot>& listOfShots)
 			}
 			else
 			{
-				enemyProperty.pos.x += sinf(angleToPosition * 3.14 / 180) * 1;
-				enemyProperty.pos.y += -cosf(angleToPosition * 3.14 / 180) * 1;
-			}
-		}
-
-	}
-
-	if (calculateDistance(player->getPos().x + 60, enemyProperty.pos.x + 28, player->getPos().y + 60, enemyProperty.pos.y + 28) < 500)
-	{
-
-		if (abs(enemyProperty.angle - angleToPlayer2) > 3)
-		{
-			if ((enemyProperty.angle - angleToPlayer2) < 0)
-			{
-				change++;
-			}
-			if ((enemyProperty.angle - angleToPlayer2) > 0)
-			{
-				change--;
-			}
-
-			if (abs(enemyProperty.angle - angleToPlayer2) > 180)
-			{
-				change = -change;
-			}
-
-			enemyProperty.angle += change;
-		}
-		else
-		{
-			if (calculateDistance(player->getPos().x + 60, enemyProperty.pos.x + 28, player->getPos().y + 60, enemyProperty.pos.y + 28) >= 300)
-			{
-				enemyProperty.pos.x += sinf(angleToPlayer2 * 3.14 / 180) * 1;
-				enemyProperty.pos.y += -cosf(angleToPlayer2 * 3.14 / 180) * 1;
-			}
-		}
-
-	}
-
-	if (calculateDistance(player->getPos().x + 60, enemyProperty.pos.x + 28, player->getPos().y + 60, enemyProperty.pos.y + 28) < 300)
-	{
-		if (abs(enemyProperty.angle - angleToPlayer2) < 3)
-		{
-			if (enemyProperty.timer % 10 == 0)
-			{
-				if (enemyProperty.timer - enemyProperty.oldTimer > 10)
+				if (calculateDistance(player->getPos().x + 60, enemyProperty.pos.x + 28, player->getPos().y + 60, enemyProperty.pos.y + 28) >= 300)
 				{
-					Shot* shot = searchSet(listOfShots);
-					shot->setAct(0);
-					shot->updateEnemy(enemyProperty.pos, angleToPlayer);
-					enemyProperty.oldTimer = enemyProperty.timer;
+					enemyProperty.pos.x += sinf(angleToPlayer2 * 3.14 / 180) * 1;
+					enemyProperty.pos.y += -cosf(angleToPlayer2 * 3.14 / 180) * 1;
+				}
+			}
+
+		}
+
+		if (calculateDistance(player->getPos().x + 60, enemyProperty.pos.x + 28, player->getPos().y + 60, enemyProperty.pos.y + 28) < 300)
+		{
+			if (abs(enemyProperty.angle - angleToPlayer2) < 3)
+			{
+				if (enemyProperty.timer % 10 == 0)
+				{
+					if (enemyProperty.timer - enemyProperty.oldTimer > 10)
+					{
+						Shot* shot = searchSet(listOfShots);
+						shot->setAct(0);
+						shot->updateEnemy(enemyProperty.pos, angleToPlayer);
+						enemyProperty.oldTimer = enemyProperty.timer;
+					}
 				}
 			}
 		}
+
+		if (enemyProperty.angle > 360)
+		{
+			enemyProperty.angle = 0;
+		}
+		if (enemyProperty.angle < 0)
+		{
+			enemyProperty.angle = 360;
+		}
+
+		enemyProperty.timer += rand() % 3;
 	}
 
-	if (enemyProperty.angle > 360)
-	{
-		enemyProperty.angle = 0;
-	}
-	if (enemyProperty.angle < 0)
-	{
-		enemyProperty.angle = 360;
-	}
-	
-	enemyProperty.timer += rand()%3;
 }
 
 void Enemy::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time)

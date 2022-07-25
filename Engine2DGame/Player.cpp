@@ -13,6 +13,8 @@ void Player::init(Microsoft::WRL::ComPtr<ID3D11Device> device, std::vector<Shot>
 	playerProperty.shotCount = 0;
 	playerProperty.hp = 15;
 	playerProperty.act = 10;
+	playerProperty.state = 1;
+	playerProperty.invincible = false;
 
 	this->listOfShots = &listOfShots;
 
@@ -21,6 +23,7 @@ void Player::init(Microsoft::WRL::ComPtr<ID3D11Device> device, std::vector<Shot>
 	spriteAmmo =  std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\shield.png");
 	spriteAmmoTypeOne = std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\rocket.png");
 	spriteAmmoTypeTwo = std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\shield_icon.png");
+	shieldAnimation = std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\shieldAnimation\\shieldanim.png");
 	
 
 	load_texture_from_file(device.Get(), L".\\resources\\FlameLetters\\NoiseTexture1.png", mask_texture_noise1.GetAddressOf(), &mask_texture2dDesc);
@@ -110,15 +113,37 @@ void Player::init(Microsoft::WRL::ComPtr<ID3D11Device> device, std::vector<Shot>
 
 void Player::update(DirectX::XMFLOAT2 pos, float angle, int action)
 {
-	if (playerProperty.timer % 10 == 0 && action == 1)
+	if (action == 1)
 	{
-		if (playerProperty.timer - playerProperty.oldTimer > 5)
+		if (playerProperty.timer - playerProperty.oldTimer > 20)
 		{
 			Shot* shot = searchSet(*this->listOfShots);
 			shot->setAct(0);
 			shot->update(getPos(), getAngle(), playerProperty.shotCount);
 			playerProperty.oldTimer = playerProperty.timer;
 			playerProperty.shotCount = !playerProperty.shotCount;
+		}
+	}
+
+	if (action == 3)
+	{
+		if (!playerProperty.invincible)
+		{
+			if (playerProperty.timer - playerProperty.oldTimerShield > 300)
+			{
+				playerProperty.invincible = true;
+				playerProperty.oldTimerShield = playerProperty.timer;
+			}
+		}
+
+	}
+
+	if (action == 9)
+	{
+		if (playerProperty.timer - playerProperty.oldTimerSwitch > 20)
+		{
+			playerProperty.state = -playerProperty.state;
+			playerProperty.oldTimerSwitch = playerProperty.timer;
 		}
 	}
 
@@ -232,10 +257,36 @@ void Player::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL:
 
 		spritePlayer->render(immediate_context.Get(), playerProperty.pos.x, playerProperty.pos.y, 128, 128, 1.0f, 1.0f, 1.0f, 1.0f, playerProperty.angle);
 
+		if (playerProperty.invincible)
+		{
+			shieldAnimation->render(immediate_context.Get(), playerProperty.pos.x, playerProperty.pos.y, 128, 128, 1.0f, 1.0f, 1.0f, 1.0f, 0, playerProperty.animeTimer % 10 * 128.0f, 128, 128, 128);
+
+			if (playerProperty.timer - playerProperty.oldTimerShield > 10)
+			{
+				playerProperty.animeTimer++;
+				playerProperty.oldTimerShield = playerProperty.timer;
+
+				if (playerProperty.animeTimer == 8)
+				{
+					playerProperty.invincible = false;
+					playerProperty.animeTimer = 0;
+				}
+			}
+
+		}
+
 	}
 
-	spriteAmmoTypeOne->render(immediate_context.Get(), 50 + 8, 650 + 8, 48, 48, 1.0f, 1.0f, 1.0f, 1.0f, 0);
-	spriteAmmo->render(immediate_context.Get(), 50, 650, 64, 64, 1.0f, 1.0f, 1.0f, 1.0f, 0);
+	if (playerProperty.state == 1)
+	{
+		spriteAmmoTypeOne->render(immediate_context.Get(), 50 + 8, 650 + 8, 48, 48, 1.0f, 1.0f, 1.0f, 1.0f, 0);
+		spriteAmmo->render(immediate_context.Get(), 50, 650, 64, 64, 1.0f, 1.0f, 1.0f, 1.0f, 0);
+	}
+	else
+	{
+		spriteAmmoTypeTwo->render(immediate_context.Get(), 50 + 8, 650 + 8, 48, 48, 1.0f, 1.0f, 1.0f, 1.0f, 0);
+		spriteAmmo->render(immediate_context.Get(), 50, 650, 64, 64, 1.0f, 1.0f, 1.0f, 1.0f, 0);
+	}
 }
 
 Shot* Player::searchSet(std::vector<Shot>& shots)

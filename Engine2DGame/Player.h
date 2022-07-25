@@ -38,6 +38,9 @@ public:
 	void setAct(int act) { this->playerProperty.act = act; }
 	int getHP() { return playerProperty.hp; }
 	void setHP(int hp) { this->playerProperty.hp = hp; }
+	int getState() { return playerProperty.state; }
+	void setState(int state) { this->playerProperty.state = state; }
+	bool getInv() { return playerProperty.invincible; }
 
 private:
 
@@ -46,9 +49,11 @@ private:
 		int                 state;      // 状態
 		int                 timer;      // タイマー
 		int					oldTimer;
+		int					oldTimerSwitch;
+		int					oldTimerShield;
 
 		bool                onGround;   // 地面フラグ
-		bool                jumpEnd;    // 着地フラグ
+		bool                invincible;    // 着地フラグ
 		char                pad[2];     // パディング（隙間）
 
 		int                 area;       // エリア
@@ -110,6 +115,7 @@ private:
 	std::unique_ptr<sprite> spriteAmmo;
 	std::unique_ptr<sprite> spriteAmmoTypeOne;
 	std::unique_ptr<sprite> spriteAmmoTypeTwo;
+	std::unique_ptr<sprite> shieldAnimation;
 
 	std::unique_ptr<sprite> life0;
 	std::unique_ptr<sprite> life1;

@@ -61,7 +61,7 @@ void judgePlayer(Player& player, std::vector<Shot>& listOfShots)
         {
             if (hitCheckPlayer(player, &listOfShots[i]))
             {
-                player.setHP(player.getHP() - 1);
+                if (!player.getInv()) player.setHP(player.getHP() - 1);
                 listOfShots[i].setAct(10);
             }
         }

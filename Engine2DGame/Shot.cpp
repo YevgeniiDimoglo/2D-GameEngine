@@ -65,13 +65,13 @@ void Shot::update(DirectX::XMFLOAT2 pos, float angle, bool shotCount)
 
 	if (shotCount)
 	{
-		tempX1 = cosf(angle * 3.14 / 180) * (pos.x + 35 - (pos.x + 64)) - sinf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.x + 64;
-		tempY1 = sinf(angle * 3.14 / 180) * (pos.x + 35 - (pos.x + 64)) + cosf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.y + 64;
+		tempX1 = cosf(angle * 3.14 / 180) * (pos.x + 50 - (pos.x + 64)) - sinf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.x + 64;
+		tempY1 = sinf(angle * 3.14 / 180) * (pos.x + 50 - (pos.x + 64)) + cosf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.y + 64;
 	}
 	else
 	{
-		tempX1 = cosf(angle * 3.14 / 180) * (pos.x + 92 - (pos.x + 64)) - sinf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.x + 64;
-		tempY1 = sinf(angle * 3.14 / 180) * (pos.x + 92 - (pos.x + 64)) + cosf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.y + 64;
+		tempX1 = cosf(angle * 3.14 / 180) * (pos.x + 80 - (pos.x + 64)) - sinf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.x + 64;
+		tempY1 = sinf(angle * 3.14 / 180) * (pos.x + 80 - (pos.x + 64)) + cosf(angle * 3.14 / 180) * (pos.y + 70 - (pos.y + 64)) + pos.y + 64;
 	}
 
 	switch (sp.act)

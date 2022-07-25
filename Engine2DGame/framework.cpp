@@ -236,8 +236,22 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 
 		if (GetAsyncKeyState(0x20) < 0)
 		{
-			player.update({ 0, 0 }, 0, 1);
+			if (player.getState() == -1)
+			{
+				player.update({ 0, 0 }, 0, 3);
+			}
+			else
+			{
+				player.update({ 0, 0 }, 0, 1);
+			}
 		}
+
+		if (GetAsyncKeyState(0x51) < 0)
+		{
+			player.update({ 0, 0 }, 0, 9);
+		}
+
+		player.update({ 0,0 }, 0, 0);
 	}
 
 	for (auto p = listOfShots.begin(); p != listOfShots.end(); ++p)
@@ -446,7 +460,7 @@ void framework::renderEnemyStage(float elapsed_time/*Elapsed seconds from last f
 
 	player.render(device.Get(), immediate_context.Get(), timer);
 
-	foreground_sprite->render(immediate_context.Get(), player.getPos().x + 60, player.getPos().y + 60, 8, 8);
+	//foreground_sprite->render(immediate_context.Get(), player.getPos().x + 60, player.getPos().y + 60, 8, 8);
 
 	for (auto p = listOfShots.begin(); p != listOfShots.end(); ++p)
 	{
@@ -498,7 +512,7 @@ void framework::renderEnemyStage(float elapsed_time/*Elapsed seconds from last f
 	for (auto p = listOfEnemies.begin(); p != listOfEnemies.end(); ++p)
 	{
 		p->render(device.Get(), immediate_context.Get(), timer);
-		foreground_sprite->render(immediate_context.Get(), p->getPos().x + 28, p->getPos().y + 30, 8, 8);
+		//foreground_sprite->render(immediate_context.Get(), p->getPos().x + 28, p->getPos().y + 30, 8, 8);
 	}
 
 	dissolveShader.render(device.Get(), immediate_context.Get());
