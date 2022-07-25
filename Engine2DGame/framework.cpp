@@ -213,44 +213,6 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 	{
 		player.setAct(1);
 
-		if (GetAsyncKeyState(0x57) < 0)
-		{
-			player.update({ 5 * sinf(player.getAngle() * PI / 180.0f), 5 * -cosf(player.getAngle() * PI / 180.0f) }, 0, 0);
-			player.setAct(2);
-		}
-		if (GetAsyncKeyState(0x53) < 0)
-		{
-			player.update({ -3 * sinf(player.getAngle() * PI / 180.0f), -3 * -cosf(player.getAngle() * PI / 180.0f) }, 0, 0);
-			player.setAct(3);
-		}
-
-		if (GetAsyncKeyState(0x41) < 0)
-		{
-			player.update({ 0, 0 }, -3, 0);
-		}
-
-		if (GetAsyncKeyState(0x44) < 0)
-		{
-			player.update({ 0, 0 }, 3, 0);
-		}
-
-		if (GetAsyncKeyState(0x20) < 0)
-		{
-			if (player.getState() == -1)
-			{
-				player.update({ 0, 0 }, 0, 3);
-			}
-			else
-			{
-				player.update({ 0, 0 }, 0, 1);
-			}
-		}
-
-		if (GetAsyncKeyState(0x51) < 0)
-		{
-			player.update({ 0, 0 }, 0, 9);
-		}
-
 		player.update({ 0,0 }, 0, 0);
 	}
 

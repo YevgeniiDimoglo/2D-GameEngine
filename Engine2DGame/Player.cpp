@@ -113,37 +113,62 @@ void Player::init(Microsoft::WRL::ComPtr<ID3D11Device> device, std::vector<Shot>
 
 void Player::update(DirectX::XMFLOAT2 pos, float angle, int action)
 {
-	if (action == 1)
+
+	if (GetAsyncKeyState(0x57) < 0)
 	{
-		if (playerProperty.timer - playerProperty.oldTimer > 20)
-		{
-			Shot* shot = searchSet(*this->listOfShots);
-			shot->setAct(0);
-			shot->update(getPos(), getAngle(), playerProperty.shotCount);
-			playerProperty.oldTimer = playerProperty.timer;
-			playerProperty.shotCount = !playerProperty.shotCount;
-		}
+		pos = { 5 * sinf(playerProperty.angle * 3.14 / 180.0f), 5 * -cosf(playerProperty.angle * 3.14 / 180.0f) };
+		playerProperty.act = (2);
+	}
+	if (GetAsyncKeyState(0x53) < 0)
+	{
+		pos = { -3 * sinf(playerProperty.angle * 3.14 / 180.0f), -3 * -cosf(playerProperty.angle * 3.14 / 180.0f) };
+		playerProperty.act = (3);
 	}
 
-	if (action == 3)
+	if (GetAsyncKeyState(0x41) < 0)
 	{
-		if (!playerProperty.invincible)
-		{
-			if (playerProperty.timer - playerProperty.oldTimerShield > 300)
-			{
-				playerProperty.invincible = true;
-				playerProperty.oldTimerShield = playerProperty.timer;
-			}
-		}
-
+		angle = -3;
 	}
 
-	if (action == 9)
+	if (GetAsyncKeyState(0x44) < 0)
 	{
-		if (playerProperty.timer - playerProperty.oldTimerSwitch > 20)
+		angle = +3;
+	}
+
+	if (GetAsyncKeyState(0x51) < 0)
+	{
+		if (playerProperty.timer - playerProperty.oldTimerSwitch > 20 && !playerProperty.invincible)
 		{
 			playerProperty.state = -playerProperty.state;
 			playerProperty.oldTimerSwitch = playerProperty.timer;
+		}
+	}
+
+	if (GetAsyncKeyState(0x20) < 0)
+	{
+		if (playerProperty.state == 1)
+		{
+			if (playerProperty.timer - playerProperty.oldTimer > 10)
+			{
+				Shot* shot = searchSet(*this->listOfShots);
+				shot->setAct(0);
+				shot->update(getPos(), getAngle(), playerProperty.shotCount);
+				playerProperty.oldTimer = playerProperty.timer;
+				playerProperty.shotCount = !playerProperty.shotCount;
+			}
+		}
+
+		if (playerProperty.state == -1)
+		{
+			if (!playerProperty.invincible)
+			{
+				if (playerProperty.timer - playerProperty.oldTimerShield > 100)
+				{
+					playerProperty.invincible = true;
+					playerProperty.oldTimerShield = playerProperty.timer;
+				}
+			}
+
 		}
 	}
 
