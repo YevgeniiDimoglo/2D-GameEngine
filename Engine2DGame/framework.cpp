@@ -168,6 +168,7 @@ bool framework::initialize()
 	player.init(device.Get(), listOfShots);
 	cloudShader.init(device.Get(), cloud_sprite);
 	enemy.init(device.Get(), &player);
+	boss.init(device.Get());
 
 	for (auto p = listOfShots.begin(); p!= listOfShots.end(); ++p)
 	{
@@ -250,6 +251,8 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 			p->updateEnemy(enemy.getPos(), enemy.getAngle());
 		}
 	}
+
+	boss.update();
 
 	switch (waveNumber)
 	{
@@ -524,6 +527,8 @@ void framework::renderBossStage(float elapsed_time/*Elapsed seconds from last fr
 	immediate_context->RSSetState(rasterizer_state.Get());
 
 	cloudShader.render(device.Get(), immediate_context.Get(), timer);
+
+	boss.render(device.Get(), immediate_context.Get(), timer);
 
 	player.render(device.Get(), immediate_context.Get(), timer);
 

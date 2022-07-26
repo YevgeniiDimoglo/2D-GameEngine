@@ -22,6 +22,7 @@
 #include "Enemy.h"
 #include "Shot.h"
 #include "Judge.h"
+#include "Boss.h"
 
 #ifdef USE_IMGUI
 #include "imgui/imgui.h"
@@ -78,6 +79,7 @@ public:
 	CloudShader cloudShader;
 	Player player;
 	Enemy enemy;
+	Boss boss;
 
 	std::vector<Shot> listOfShots{512}; 
 	std::vector<Shot> listOfEnemyShots{ 512 };

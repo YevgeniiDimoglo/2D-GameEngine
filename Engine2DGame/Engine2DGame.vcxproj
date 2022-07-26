@@ -161,6 +161,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="Cloud.cpp" />
     <ClCompile Include="dissolve.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -181,6 +182,7 @@
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Boss.h" />
     <ClInclude Include="Cloud.h" />
     <ClInclude Include="dissolve.h" />
     <ClInclude Include="Enemy.h" />
