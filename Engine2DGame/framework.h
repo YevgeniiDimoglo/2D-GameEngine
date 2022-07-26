@@ -8,6 +8,7 @@
 #include <d3d11.h>
 #include <wrl.h>
 #include "DirectXTK-master/Inc/WICTextureLoader.h"
+#include "Audio.h"
 
 #include "misc.h"
 #include "high_resolution_timer.h"
@@ -43,6 +44,11 @@ class framework
 {
 public:
 	CONST HWND hwnd;
+
+	std::unique_ptr<DirectX::AudioEngine> m_audEngine;
+	std::unique_ptr<DirectX::SoundEffect> m_explode;
+	std::unique_ptr<DirectX::SoundEffect> m_ambient;
+	std::unique_ptr<DirectX::SoundEffectInstance> m_nightLoop;
 
 	Microsoft::WRL::ComPtr<ID3D11Device> device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context;

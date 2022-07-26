@@ -158,7 +158,6 @@ bool framework::initialize()
 	background_sprite = std::make_shared<sprite>(device.Get(), L".\\resources\\background.png");
 	cloud_sprite = std::make_shared<sprite>(device.Get(), L".\\resources\\background.png");
 	fade_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\fade.png");
-	//foreground_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\bossAttackAnim\\boss_attack.png");
 	foreground_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\center.png");
 
 	font_sprite = std::make_unique<sprite>(device.Get(), L".\\resources\\fonts\\font4.png");
@@ -187,6 +186,18 @@ bool framework::initialize()
 		p->setState(index);
 		p->update(listOfEnemyShots);
 	}
+
+	DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AudioEngine_Default;
+	#ifdef _DEBUG
+	eflags |= DirectX::AudioEngine_Debug;
+	#endif
+
+	m_audEngine = std::make_unique<DirectX::AudioEngine>(eflags);
+
+	m_explode = std::make_unique<DirectX::SoundEffect>(m_audEngine.get(), L".\\resources\\audio\\orch24.wav");
+
+	m_nightLoop = m_explode->CreateInstance();
+
 	srand(time(0));
 	return true;
 }
@@ -417,6 +428,8 @@ void framework::renderEnemyStage(float elapsed_time/*Elapsed seconds from last f
 	immediate_context->OMSetBlendState(blend_state.Get(), nullptr, 0xFFFFFFFF);
 	immediate_context->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
 	immediate_context->RSSetState(rasterizer_state.Get());
+
+	m_nightLoop->Play(true);
 
 	cloudShader.render(device.Get(), immediate_context.Get(), timer);
 
