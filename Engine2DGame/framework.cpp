@@ -168,6 +168,7 @@ bool framework::initialize()
 	player.init(device.Get(), listOfShots);
 	cloudShader.init(device.Get(), cloud_sprite);
 	enemy.init(device.Get(), &player);
+
 	boss.init(device.Get());
 
 	for (auto p = listOfShots.begin(); p!= listOfShots.end(); ++p)
@@ -195,9 +196,11 @@ bool framework::initialize()
 
 	m_audEngine = std::make_unique<DirectX::AudioEngine>(eflags);
 
-	m_explode = std::make_unique<DirectX::SoundEffect>(m_audEngine.get(), L".\\resources\\audio\\orch24.wav");
+	m_fistSong = std::make_unique<DirectX::SoundEffect>(m_audEngine.get(), L".\\resources\\audio\\orch24.wav");
+	m_secondSong = std::make_unique<DirectX::SoundEffect>(m_audEngine.get(), L".\\resources\\audio\\piano32.wav");
 
-	m_nightLoop = m_explode->CreateInstance();
+	m_StageLoop = m_fistSong->CreateInstance();
+	m_BossLoop = m_secondSong->CreateInstance();
 
 	srand(time(0));
 	return true;
@@ -215,6 +218,8 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 #ifdef USE_IMGUI
 	ImGui::Begin("ImGUI");
 	ImGui::SliderFloat("TIMER", &timer, 0.0f, +3600.0f);
+	int bossTimer = boss.getTimer();
+	ImGui::SliderInt("BossTimer", &bossTimer, 0, 3600);
 
 	ImGui::End();
 #endif
@@ -252,7 +257,10 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 		}
 	}
 
-	boss.update();
+	if (sceneNumber == 2)
+	{
+		boss.update();
+	}
 
 	switch (waveNumber)
 	{
@@ -330,6 +338,7 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 	{
 		sceneNumber = 1;
 		waveNumber = 1;
+		timer = 0;
 	}
 
 	if (GetAsyncKeyState(0x31) < 0)
@@ -356,11 +365,20 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 	{
 		sceneNumber++;
 		waveNumber++;
+		timer = 0;
 	}
 
 	if (player.getHP() == 0)
 	{
 		sceneNumber = 10;
+		timer = 0;
+		player.setHP(-1);
+	}
+	if (boss.getTimer() >= 4650)
+	{
+		sceneNumber = 9;
+		timer = 0;
+		boss.setTimer(0);
 	}
 	
 	judge(listOfShots, listOfEnemies);
@@ -432,7 +450,8 @@ void framework::renderEnemyStage(float elapsed_time/*Elapsed seconds from last f
 	immediate_context->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
 	immediate_context->RSSetState(rasterizer_state.Get());
 
-	m_nightLoop->Play(true);
+	m_StageLoop->SetVolume(0.2);
+	m_StageLoop->Play(true);
 
 	cloudShader.render(device.Get(), immediate_context.Get(), timer);
 
@@ -526,11 +545,21 @@ void framework::renderBossStage(float elapsed_time/*Elapsed seconds from last fr
 	immediate_context->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
 	immediate_context->RSSetState(rasterizer_state.Get());
 
+	m_StageLoop->Stop();
+	m_BossLoop->SetVolume(0.5);
+	m_BossLoop->Play();
+
 	cloudShader.render(device.Get(), immediate_context.Get(), timer);
 
 	boss.render(device.Get(), immediate_context.Get(), timer);
 
 	player.render(device.Get(), immediate_context.Get(), timer);
+
+	if (boss.getTimer() >= 4000)
+	{
+		fade_sprite->render(immediate_context.Get(), 0, 0, 1280, 720, 1.0f, 1.0f, 1.0f, (boss.getTimer() - 4000.0f) / 500, 0);
+	}
+
 
 #ifdef USE_IMGUI
 	ImGui::Render();
@@ -550,6 +579,9 @@ void framework::renderGameOver(float elapsed_time/*Elapsed seconds from last fra
 	immediate_context->ClearDepthStencilView(depth_stencil_view.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	immediate_context->OMSetRenderTargets(1, render_target_view.GetAddressOf(), depth_stencil_view.Get());
 
+	m_StageLoop->Stop();
+	m_BossLoop->Stop();
+
 	D3D11_VIEWPORT viewport{};
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
@@ -562,12 +594,57 @@ void framework::renderGameOver(float elapsed_time/*Elapsed seconds from last fra
 	immediate_context->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
 	immediate_context->RSSetState(rasterizer_state.Get());
 
-	dissolveShader.setTime(0);
-	dissolveShader.render(device.Get(), immediate_context.Get());
+	if (timer == 0)
+	{
+		dissolveShader.setTime(1);
+	}
 
-	fade_sprite->render(immediate_context.Get(), 0, 0, 1280, 720);
+	dissolveShader.reverseRender(device.Get(), immediate_context.Get());
 
 	font_sprite->textout(immediate_context.Get(), "GAME OVER", 0, 250, 142, 120, 1.0f, 1.0f, 1.0f, 1.0f);
+
+
+#ifdef USE_IMGUI
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+#endif
+
+	UINT sync_interval{ 1 };
+	swap_chain->Present(sync_interval, 0);
+
+}
+
+void framework::renderGameComplete(float elapsed_time/*Elapsed seconds from last frame*/)
+{
+
+	FLOAT color[]{ 0.2f, 0.2f, 0.2f, 1.0f };
+	immediate_context->ClearRenderTargetView(render_target_view.Get(), color);
+	immediate_context->ClearDepthStencilView(depth_stencil_view.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	immediate_context->OMSetRenderTargets(1, render_target_view.GetAddressOf(), depth_stencil_view.Get());
+
+	m_StageLoop->Stop();
+	m_BossLoop->Stop();
+
+	D3D11_VIEWPORT viewport{};
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.Width = static_cast<float>(SCREEN_WIDTH);
+	viewport.Height = static_cast<float>(SCREEN_HEIGHT);
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
+	immediate_context->RSSetViewports(1, &viewport);
+	immediate_context->OMSetBlendState(blend_state.Get(), nullptr, 0xFFFFFFFF);
+	immediate_context->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
+	immediate_context->RSSetState(rasterizer_state.Get());
+
+	if (timer == 0)
+	{
+		dissolveShader.setTime(1);
+	}
+
+	dissolveShader.reverseRender(device.Get(), immediate_context.Get());
+
+	font_sprite->textout(immediate_context.Get(), "GAME COMPLETE", 0, 250, 100, 80, 1.0f, 1.0f, 1.0f, 1.0f);
 
 #ifdef USE_IMGUI
 	ImGui::Render();

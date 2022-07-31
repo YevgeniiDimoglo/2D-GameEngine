@@ -162,7 +162,7 @@ void Player::update(DirectX::XMFLOAT2 pos, float angle, int action)
 		{
 			if (!playerProperty.invincible)
 			{
-				if (playerProperty.timer - playerProperty.oldTimerShield > 100)
+				if (playerProperty.timer - playerProperty.oldTimerShield > 50)
 				{
 					playerProperty.invincible = true;
 					playerProperty.oldTimerShield = playerProperty.timer;

@@ -82,6 +82,27 @@ void DissolveShader::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microso
 
 }
 
+void DissolveShader::reverseRender(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context)
+{
+	timer_constants timer{};
+	timer.parameters.x = this->timer;
+	immediate_context->UpdateSubresource(timer_constant_buffer.Get(), 0, 0, &timer, 0, 0);
+	immediate_context->VSSetConstantBuffers(1, 1, timer_constant_buffer.GetAddressOf());
+	immediate_context->PSSetConstantBuffers(1, 1, timer_constant_buffer.GetAddressOf());
+
+
+	immediate_context->IASetInputLayout(sprite_input_layout_dissolve.Get());
+	immediate_context->VSSetShader(sprite_vertex_shader_dissolve.Get(), nullptr, 0);
+	immediate_context->PSSetShader(sprite_pixel_shader_dissolve.Get(), nullptr, 0);
+	immediate_context->PSSetSamplers(0, 1, sampler_state_dissolve.GetAddressOf());
+	immediate_context->PSSetShaderResources(1, 1, mask_texture_noise1.GetAddressOf());
+
+
+	spriteDissolve->render(immediate_context.Get(), 0, 0, 1280, 720);
+	this->timer -= 0.01f;
+
+}
+
 void DissolveShader::setTime(int time)
 {
 	timer = time;

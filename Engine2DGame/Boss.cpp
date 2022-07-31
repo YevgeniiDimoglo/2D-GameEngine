@@ -14,6 +14,7 @@ void Boss::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 	bossProperty.animeTimer = 0;
 
 	spriteBoss = std::make_unique<sprite>(device.Get(), L".\\resources\\enemy\\boss.png");
+	spriteBossPylon = std::make_unique<sprite>(device.Get(), L".\\resources\\enemy\\boss2.png");
 	attackAnimation = std::make_unique<sprite>(device.Get(), L".\\resources\\ammo\\bossAttackAnim\\boss_attack.png");
 
 	HRESULT hr{ S_OK };
@@ -59,6 +60,52 @@ void Boss::init(Microsoft::WRL::ComPtr<ID3D11Device> device)
 			sprite_pixel_shader_boss.GetAddressOf());
 	}
 
+	attacks = {
+		{ 0, { 50  -517, 230 -517},   0 },
+		{ 0, { 1230  -517, 230 -517},   0 },
+
+		{ 0, { 50 - 517, 230 - 517},   0 },
+
+		{ 0, { 620  -517, 280 -517},   0 },
+
+		{ 0, { 620 -517, 280 -517},   0 },
+
+		{ 0, { 620 -517, 280 -517},   0 },
+
+		{ 0, { 480 -517, 270 -517},   0 },
+		{ 0, { 760  -517, 270 -517},   0 },
+
+		{ 0, { 320  -517, 260 -517},   0 },
+		{ 0, { 960  -517, 260 -517},   0 },
+
+		{ 0, { 50  -517, 230 -517},   0 },
+		{ 0, { 1230  -517, 230 -517},   0 },
+
+		{ 0, { 620 - 517, 280 - 517},   0 },
+
+		{ 0, { 50  -517, 230 -517},   0 },
+		{ 0, { 1230  -517, 230 -517},   0 },
+
+		{ 0, { 620 -517, 280 -517},   0 },
+		{ 0, { 50 - 517, 230 - 517},   0 },
+
+		{ 0, { 620 - 517, 280 - 517},   0 },
+		{ 0, { 1230  -517, 230 -517},   0 },
+
+		{ 0, { 1230 - 517, 230 - 517},   0 },
+
+		{ 0, { 620 - 517, 280 - 517},   0 },
+
+		{ 0, { 50  -517, 230 -517},   0 },
+
+		{ 0, { 620 - 517, 280 - 517},   0 },
+		{ 0, { 50  -517, 230 -517},   0 },
+		{ 0, { 1230  -517, 230 -517},   0 },
+
+		{ 0, { 620 -517, 280 -517},   0 },
+
+		{ 0, { 620 -517, 280 -517},   0 },
+	};
 }
 
 void Boss::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context, float elapsed_time)
@@ -69,12 +116,105 @@ void Boss::render(Microsoft::WRL::ComPtr<ID3D11Device> device, Microsoft::WRL::C
 
 	immediate_context->PSSetSamplers(0, 1, sampler_state_boss.GetAddressOf());
 
+	spriteBossPylon->render(immediate_context.Get(), bossProperty.pos.x + 450, bossProperty.pos.y + 100, 320, 320, 1.0f, 1.0f, 1.0f, 1.0f, 0);
 	spriteBoss->render(immediate_context.Get(), bossProperty.pos.x, bossProperty.pos.y, 1280, 512, 1.0f, 1.0f, 1.0f, 1.0f, 0);
+	
+	if (bossProperty.timer % 1 == 0)
+	{
+		renderAttack(immediate_context.Get());
+	}
 }
+
+void Boss::renderAttack(Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context)
+{
+	for (size_t i = 0; i < attacks.size(); i++)
+	{
+		if (attacks[i].render)
+		{
+			attacks[i].animeTimer++;
+
+			attackAnimation->render(immediate_context.Get(), attacks[i].pos.x, attacks[i].pos.y, 1024, 1024, 1.0f, 1.0f, 1.0f, 1.0f, 0, attacks[i].animeTimer / 2 * 1034.0f, attacks[i].animeTimer / 2 / 11 * 1034.0f, 1034, 1034);
+
+			if (attacks[i].animeTimer == 80)
+			{
+				attacks[i].animeTimer == 0;
+				attacks[i].render = false;
+			}
+		}
+
+	}
+}
+
+void Boss::updateAttack(int number)
+{
+	attacks[number].render = true;
+}
+
+struct PTN_DATA
+{
+	int timer;
+	int ptn;
+};
+
+PTN_DATA bossPtn[] =
+{
+	{50, 0},
+	{50, 1},
+
+	{270, 2, },
+
+	{770, 3, },
+
+	{900, 4, },
+
+	{1030, 5, },
+
+	{1270, 6, },
+	{1270, 7, },
+
+	{1400, 8, },
+	{1400, 9, },
+
+	{1530, 10, },
+	{1530, 11, },
+
+	{2030, 12, },
+
+	{2530, 13, },
+	{2530, 14, },
+
+	{2660, 15, },
+	{2660, 16, },
+
+	{2790, 17, },
+	{2790, 18, },
+
+	{3070, 19, },
+
+	{3200, 20, },
+
+	{3330, 21, },
+
+	{4000, 22, },
+	{4000, 23, },
+	{4000, 24, },
+
+	{4500, 25, },
+
+	{-1, -1}
+};
 
 void Boss::update()
 {
 	bossProperty.timer++;
+
+	for (int n = 0; bossPtn[n].ptn != -1; ++n)
+	{
+		if (bossProperty.timer == bossPtn[n].timer)
+		{
+			updateAttack(bossPtn[n].ptn);
+		}
+	}
 }
 
 Boss::~Boss()

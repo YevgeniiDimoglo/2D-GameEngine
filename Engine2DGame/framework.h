@@ -47,9 +47,10 @@ public:
 	CONST HWND hwnd;
 
 	std::unique_ptr<DirectX::AudioEngine> m_audEngine;
-	std::unique_ptr<DirectX::SoundEffect> m_explode;
-	std::unique_ptr<DirectX::SoundEffect> m_ambient;
-	std::unique_ptr<DirectX::SoundEffectInstance> m_nightLoop;
+	std::unique_ptr<DirectX::SoundEffect> m_fistSong;
+	std::unique_ptr<DirectX::SoundEffect> m_secondSong;
+	std::unique_ptr<DirectX::SoundEffectInstance> m_StageLoop;
+	std::unique_ptr<DirectX::SoundEffectInstance> m_BossLoop;
 
 	Microsoft::WRL::ComPtr<ID3D11Device> device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context;
@@ -81,9 +82,9 @@ public:
 	Enemy enemy;
 	Boss boss;
 
-	std::vector<Shot> listOfShots{512}; 
+	std::vector<Shot> listOfShots{ 512 }; 
 	std::vector<Shot> listOfEnemyShots{ 512 };
-	std::vector<Enemy> listOfEnemies{100};
+	std::vector<Enemy> listOfEnemies{ 100 };
 
 	float timer;
 	float oldTimer;
@@ -142,6 +143,9 @@ public:
 					break;
 				case 2:
 					renderBossStage(tictoc.time_interval());
+					break;
+				case 9:
+					renderGameComplete(tictoc.time_interval());
 					break;
 				case 10:
 					renderGameOver(tictoc.time_interval());
@@ -216,6 +220,7 @@ private:
 	void renderEnemyStage(float elapsed_time);
 	void renderBossStage(float elapsed_time);
 	void renderGameOver(float elapsed_time);
+	void renderGameComplete(float elapsed_time);
 	void updateEnemies(int start, int end);
 	void checkEnemies(int start, int end);
 	bool uninitialize();

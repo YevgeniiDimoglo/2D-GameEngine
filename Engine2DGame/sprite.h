@@ -37,5 +37,4 @@ public:
 	void render(ID3D11DeviceContext* immediate_context, const DirectX::XMFLOAT2& position, const DirectX::XMFLOAT2& scale, const DirectX::XMFLOAT2& texPos, const DirectX::XMFLOAT2& texSize, const DirectX::XMFLOAT2& center, float angle, const DirectX::XMFLOAT4& color) const;
 	void textout(ID3D11DeviceContext* immediate_context, std::string s, float x, float y, float w, float h, float r, float g, float b, float a);
 	void textout2(ID3D11DeviceContext* immediate_context, std::string s, float x, float y, float w, float h, float r, float g, float b, float a);
-	void circle(ID3D11DeviceContext* immediate_context, const DirectX::XMFLOAT2& center, float radius, const DirectX::XMFLOAT2& scale, float angle, const DirectX::XMFLOAT4& color, int n);
 };
