@@ -33,7 +33,9 @@ public:
 	void update(DirectX::XMFLOAT2 pos, float angle, int action);
 
 	DirectX::XMFLOAT2 getPos() { return playerProperty.pos; }
+	void setPos(DirectX::XMFLOAT2 pos) { this->playerProperty.pos = pos; }
 	float getAngle() { return playerProperty.angle; }
+	void setAngle( float angle) { this->playerProperty.angle = angle; }
 	int getAct() { return playerProperty.act; }
 	void setAct(int act) { this->playerProperty.act = act; }
 	int getHP() { return playerProperty.hp; }
@@ -41,6 +43,7 @@ public:
 	int getState() { return playerProperty.state; }
 	void setState(int state) { this->playerProperty.state = state; }
 	bool getInv() { return playerProperty.invincible; }
+	void setArea(int area) { this->playerProperty.area = area; }
 
 private:
 

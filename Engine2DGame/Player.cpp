@@ -113,34 +113,36 @@ void Player::init(Microsoft::WRL::ComPtr<ID3D11Device> device, std::vector<Shot>
 
 void Player::update(DirectX::XMFLOAT2 pos, float angle, int action)
 {
-
-	if (GetAsyncKeyState(0x57) < 0)
+	if (playerProperty.area != 2)
 	{
-		pos = { 5 * sinf(playerProperty.angle * 3.14 / 180.0f), 5 * -cosf(playerProperty.angle * 3.14 / 180.0f) };
-		playerProperty.act = (2);
-	}
-	if (GetAsyncKeyState(0x53) < 0)
-	{
-		pos = { -3 * sinf(playerProperty.angle * 3.14 / 180.0f), -3 * -cosf(playerProperty.angle * 3.14 / 180.0f) };
-		playerProperty.act = (3);
-	}
-
-	if (GetAsyncKeyState(0x41) < 0)
-	{
-		angle = -3;
-	}
-
-	if (GetAsyncKeyState(0x44) < 0)
-	{
-		angle = +3;
-	}
-
-	if (GetAsyncKeyState(0x51) < 0)
-	{
-		if (playerProperty.timer - playerProperty.oldTimerSwitch > 20 && !playerProperty.invincible)
+		if (GetAsyncKeyState(0x57) < 0)
 		{
-			playerProperty.state = -playerProperty.state;
-			playerProperty.oldTimerSwitch = playerProperty.timer;
+			pos = { 5 * sinf(playerProperty.angle * 3.14 / 180.0f), 5 * -cosf(playerProperty.angle * 3.14 / 180.0f) };
+			playerProperty.act = (2);
+		}
+		if (GetAsyncKeyState(0x53) < 0)
+		{
+			pos = { -3 * sinf(playerProperty.angle * 3.14 / 180.0f), -3 * -cosf(playerProperty.angle * 3.14 / 180.0f) };
+			playerProperty.act = (3);
+		}
+
+		if (GetAsyncKeyState(0x41) < 0)
+		{
+			angle = -3;
+		}
+
+		if (GetAsyncKeyState(0x44) < 0)
+		{
+			angle = +3;
+		}
+
+		if (GetAsyncKeyState(0x51) < 0)
+		{
+			if (playerProperty.timer - playerProperty.oldTimerSwitch > 20 && !playerProperty.invincible)
+			{
+				playerProperty.state = -playerProperty.state;
+				playerProperty.oldTimerSwitch = playerProperty.timer;
+			}
 		}
 	}
 
@@ -169,6 +171,21 @@ void Player::update(DirectX::XMFLOAT2 pos, float angle, int action)
 				}
 			}
 
+		}
+	}
+
+	if (playerProperty.timer % 10 == 0 && playerProperty.area == 2)
+	{
+		playerProperty.pos.x += 2.5;
+		playerProperty.pos.y += -cosf(rand() % 360 * 3.14 / 180) * 20;
+
+		if (playerProperty.pos.y < 450 - 64)
+		{
+			playerProperty.pos.y = 450 - 64;
+		}
+		if (playerProperty.pos.y > 550 - 30 - 64)
+		{
+			playerProperty.pos.y = 550 - 30 - 64;
 		}
 	}
 

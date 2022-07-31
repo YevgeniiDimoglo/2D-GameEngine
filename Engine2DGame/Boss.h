@@ -35,6 +35,8 @@ public:
 
 	int getTimer() { return bossProperty.timer; }
 	void setTimer (int timer) { this->bossProperty.timer = timer; }
+	auto getAttacks() { return attacks; }
+	void setAttackValue(int number, int value) { this->attacks[number].render = value; }
 
 private:
 

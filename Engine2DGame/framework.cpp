@@ -216,12 +216,12 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 
 
 #ifdef USE_IMGUI
-	ImGui::Begin("ImGUI");
-	ImGui::SliderFloat("TIMER", &timer, 0.0f, +3600.0f);
-	int bossTimer = boss.getTimer();
-	ImGui::SliderInt("BossTimer", &bossTimer, 0, 3600);
+	//ImGui::Begin("ImGUI");
+	//ImGui::SliderFloat("TIMER", &timer, 0.0f, +3600.0f);
+	//int bossTimer = boss.getTimer();
+	//ImGui::SliderInt("BossTimer", &bossTimer, 0, 3600);
 
-	ImGui::End();
+	//ImGui::End();
 #endif
 
 	timer += elapsed_time;
@@ -356,6 +356,11 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 		sceneNumber = 2;
 	}
 
+	if (GetAsyncKeyState(0x38) < 0)
+	{
+		sceneNumber = 9;
+	}
+
 	if (GetAsyncKeyState(0x39) < 0)
 	{
 		sceneNumber = 10;
@@ -366,6 +371,10 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 		sceneNumber++;
 		waveNumber++;
 		timer = 0;
+		player.setArea(2);
+		player.setState(-1);
+		player.setAngle(90);
+		player.setPos({ 50, 500 });
 	}
 
 	if (player.getHP() == 0)
@@ -383,6 +392,7 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 	
 	judge(listOfShots, listOfEnemies);
 	judgePlayer(player, listOfEnemyShots);
+	judgePlayerBoss(player, boss);
 }
 void framework::renderTitle(float elapsed_time/*Elapsed seconds from last frame*/)
 {
@@ -414,11 +424,11 @@ void framework::renderTitle(float elapsed_time/*Elapsed seconds from last frame*
 		immediate_context->PSSetShader(sprite_pixel_shader.Get(), nullptr, 0);
 		immediate_context->PSSetSamplers(0, 1, sampler_state.GetAddressOf());
 
-		font_sprite->textout(immediate_context.Get(), "Development", 0, 0, 50, 40, 1.0f, 0.0f, 1.0f, 1.0f);
+		//font_sprite->textout(immediate_context.Get(), "Development", 0, 0, 50, 40, 1.0f, 0.0f, 1.0f, 1.0f);
 
 		if (((int)(timer)) % 2 == 0)
 		{
-			font_sprite_d->textout2(immediate_context.Get(), "START", 300, 400, 150, 120, 1.0f, 0.0f, 0.0f, 1.0f);
+			font_sprite_d->textout2(immediate_context.Get(), "START", 250, 400, 150, 120, 1.0f, 0.0f, 0.0f, 1.0f);
 		}
 		
 	}
@@ -450,7 +460,7 @@ void framework::renderEnemyStage(float elapsed_time/*Elapsed seconds from last f
 	immediate_context->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
 	immediate_context->RSSetState(rasterizer_state.Get());
 
-	m_StageLoop->SetVolume(0.2);
+	m_StageLoop->SetVolume(0.1f);
 	m_StageLoop->Play(true);
 
 	cloudShader.render(device.Get(), immediate_context.Get(), timer);

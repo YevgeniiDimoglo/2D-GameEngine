@@ -68,6 +68,26 @@ void judgePlayer(Player& player, std::vector<Shot>& listOfShots)
     }
 }
 
+void judgePlayerBoss(Player& player, Boss& boss)
+{
+    for (size_t i = 0; i < boss.getAttacks().size(); i++)
+    {
+        if (boss.getAttacks()[i].render == true)
+        {
+            if (hitCheckCircle({ player.getPos().x + 60, player.getPos().y + 60 }, 40, { boss.getAttacks()[i].pos.x + 517, boss.getAttacks()[i].pos.y + 517 }, boss.getAttacks()[i].animeTimer * 6))
+            {
+                if (!player.getInv())
+                {
+                    player.setHP(player.getHP() - 5);
+                }
+                boss.setAttackValue(i, false);
+                return;
+            }
+        }
+        
+    }
+}
+
 //void judge2()
 //{
 //    for (int i = 0; i < SHOT_MAX; ++i)
