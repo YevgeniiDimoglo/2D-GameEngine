@@ -79,6 +79,7 @@ void judgePlayerBoss(Player& player, Boss& boss)
                 if (!player.getInv())
                 {
                     player.setHP(player.getHP() - 5);
+                    if (player.getHP() < 0) player.setHP(0);
                 }
                 boss.setAttackValue(i, false);
                 return;
